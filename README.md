@@ -6,6 +6,10 @@
 
 <!-- add docs here for user -->
 
+```bash
+npm sequelize db:migrate
+```
+
 see [egg docs][egg] for more detail.
 
 ### Development
