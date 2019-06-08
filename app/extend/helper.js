@@ -40,7 +40,7 @@ module.exports = {
   async getPayload(token) {
     const { app } = this;
     const secret = app.config.jwt.secret;
-    console.log(token);
+    // console.log(token);
     return await app.jwt.verify(token.split(' ')[1], secret);
   },
 };

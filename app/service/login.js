@@ -60,7 +60,7 @@ class LoginService extends Service {
       name,
       type: 'access_token',
     };
-    console.log(payload);
+    // console.log(payload);
     const access_token = await app.jwt.sign(payload, secret, {
       expiresIn: '1h',
     });

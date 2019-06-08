@@ -31,6 +31,7 @@ class UserController extends Controller {
     const res = await ctx.service.user.register(account, password);
     ctx.body = res;
   }
+  // 登陆
   async login() {
     const { ctx } = this;
     // 校验规则
@@ -50,7 +51,7 @@ class UserController extends Controller {
   }
   async refresh() {
     const { ctx } = this;
-    const refresh_token = ctx.header.refresh_token;
+    const refresh_token = ctx.header.authorization;
     const access_token = await ctx.service.login.refresh(refresh_token);
     ctx.body = {
       code: 0,
