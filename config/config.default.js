@@ -11,12 +11,14 @@ module.exports = appInfo => {
    * @type {Egg.EggAppConfig}
    **/
   const config = {
+    jwt: {
+      secret: '123456',
+    },
     security: {
       csrf: {
         enable: false,
       },
     },
-
     // mysql配置
     sequelize: {
       dialect: 'mysql',

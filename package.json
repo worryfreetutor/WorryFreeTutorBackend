@@ -11,7 +11,8 @@
     "egg-scripts": "^2.11.0",
     "egg-sequelize": "^5.0.0",
     "egg-validate": "^2.0.2",
-    "mysql2": "^1.6.5"
+    "mysql2": "^1.6.5",
+    "egg-jwt": "^3.1.6",
   },
   "devDependencies": {
     "autod": "^3.0.1",
