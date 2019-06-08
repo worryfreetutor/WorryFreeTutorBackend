@@ -4,28 +4,33 @@ const Service = require('egg').Service;
 const errCode = require('../../config/errCode');
 
 class UserService extends Service {
-  async registry(account, password) {
+  async register(account, password) {
     const { ctx, config } = this;
+    let user;
     try {
-      const user = await ctx.model.User.findOne({
+      user = await ctx.model.User.findOne({
         where: { account },
       });
-      // 该账号已注册过
-      if (user) {
-        // TODO 错误码
-        throw ctx.helper.createError('该账号已被注册', errCode.User.registryAccountExisted);
-      }
+    } catch (err) {
+      ctx.logger.warn(err);
+      throw ctx.helper.createError('service/user/查找用户 未知错误');
+    }
+    // 该账号已注册过
+    if (user) {
+      throw ctx.helper.createError('该账号已被注册', errCode.User.registryAccountExisted);
+    }
+    try {
       await ctx.model.User.create({
         account,
         password: ctx.helper.encrypt(password, config.userEncryptKey),
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw new Error(err);
+      throw ctx.helper.createError('service/user/插入新用户 未知错误');
     }
     return {
       message: '注册成功',
-    }
+    };
   }
 }
 

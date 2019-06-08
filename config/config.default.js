@@ -22,11 +22,11 @@ module.exports = appInfo => {
     // mysql配置
     sequelize: {
       dialect: 'mysql',
-      host: '127.0.0.1',
+      host: '111.230.147.75',
       port: 3306,
       username: 'root',
-      password: 'xiaocy',
-      database: 'test',
+      password: 'XiaoCY135!',
+      database: 'backend',
     },
   };
 

@@ -5,7 +5,7 @@ const errCode = require('../../config/errCode');
 
 class UserController extends Controller {
   // 注册
-  async registry() {
+  async register() {
     const { ctx } = this;
     ctx.validate({
       account: {
@@ -28,7 +28,7 @@ class UserController extends Controller {
     if (password !== repassword) {
       throw ctx.helper.createError('两次输入的密码不一致', errCode.User.registryRepassDiff);
     }
-    const res = await ctx.service.user.registry(account, password);
+    const res = await ctx.service.user.register(account, password);
     ctx.body = res;
   }
   async login() {

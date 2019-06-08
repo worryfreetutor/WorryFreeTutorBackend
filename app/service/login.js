@@ -1,15 +1,30 @@
 'use strict';
 const Service = require('egg').Service;
+const errCode = require('../../config/errCode');
 
 class LoginService extends Service {
   async login(account, password) {
-    const { app } = this;
+    const { app, ctx } = this;
+    let user;
     // TODO:
     // 从数据库中查找账号和密码
     // 当用户名不存在的时候需要提示注册
     // 当密码错误则返回密码错误的错误码和信息
-    if (account === '123' && !password === '123') {
-      console.log('登陆成功');
+    try {
+      user = await ctx.model.User.findOne({
+        attributes: [ 'account', 'password' ],
+        where: { account },
+      });
+    } catch (err) {
+      throw ctx.helper.createError('serviceLogin未知错误');
+    }
+    if (!user) {
+      throw ctx.helper.createError('该用户没有注册', errCode.User.loginAccountNoexist);
+    }
+    // 判断密码是否与数据库密码一致
+    const dbPassword = ctx.helper.decrypt(user.password, app.config.userEncryptKey);
+    if (dbPassword !== password) {
+      throw ctx.helper.createError('密码错误！', errCode.User.loginPasswordError);
     }
     // 使用jwt创建用户对应token
     const secret = app.config.jwt.secret;

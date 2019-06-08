@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const errCode = require('../../config/errCode');
 
 // 加密函数
 const encrypt = (data, key) => {
@@ -24,7 +25,7 @@ module.exports = {
     if (code) {
       err.code = code;
     } else {
-      err.code = this.config.errCode.UnknownErr;
+      err.code = errCode.UnknownErr;
       this.ctx.logger.warn(`未知错误 ${err.message}`);
     }
     return err;
