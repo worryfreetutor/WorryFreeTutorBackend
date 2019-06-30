@@ -50,21 +50,19 @@ class LoginService extends Service {
    * @param refresh_token : 刷新令牌
    * @retrun access_token : 令牌
    */
-  async refresh(refresh_token) {
-    const { app, ctx } = this;
+  async refresh(account) {
+    const { app } = this;
     const secret = app.config.jwt.secret;
     // 获取存储用户信息的payload的name
-    const result = await ctx.helper.getPayload(refresh_token);
-    const name = result.name;
+    // const result = await ctx.helper.getPayload(refresh_token);
+    // const name = result.name;
     const payload = {
-      name,
+      name: account,
       type: 'access_token',
     };
-    // console.log(payload);
     const access_token = await app.jwt.sign(payload, secret, {
       expiresIn: '1h',
     });
-    // console.log(access_token);
     return access_token;
   }
 }

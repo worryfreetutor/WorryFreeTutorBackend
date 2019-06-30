@@ -51,8 +51,8 @@ class UserController extends Controller {
   }
   async refresh() {
     const { ctx } = this;
-    const refresh_token = ctx.header.authorization;
-    const access_token = await ctx.service.login.refresh(refresh_token);
+    const account = ctx.session.account;
+    const access_token = await ctx.service.login.refresh(account);
     ctx.body = {
       code: 0,
       access_token,
