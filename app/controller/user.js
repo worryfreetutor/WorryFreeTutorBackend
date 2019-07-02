@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const errCode = require('../../config/errCode');
+const userErrCode = require('../../config/errCode').userErrCode;
 
 class UserController extends Controller {
   // 注册
@@ -19,7 +19,7 @@ class UserController extends Controller {
     const { account, password } = ctx.request.body;
     const isPhone = str => /^\d+$/.test(str);
     if (!isPhone(account)) {
-      throw ctx.helper.createError('账号必须为有效手机号', errCode.User.registryAccountParamErr);
+      throw ctx.helper.createError('账号必须为有效手机号', userErrCode.register.accountMustBeNumber);
     }
     const res = await ctx.service.user.register(account, password);
     ctx.body = res;

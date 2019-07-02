@@ -1,7 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service;
-const errCode = require('../../config/errCode');
+const userErrCode = require('../../config/errCode').userErrCode;
 
 class UserService extends Service {
   async register(account, password) {
@@ -17,7 +17,7 @@ class UserService extends Service {
     }
     // 该账号已注册过
     if (user) {
-      throw ctx.helper.createError('该账号已被注册', errCode.User.registryAccountExisted);
+      throw ctx.helper.createError('该账号已被注册', userErrCode.register.accountExisted);
     }
     try {
       await ctx.model.User.create({

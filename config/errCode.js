@@ -15,31 +15,25 @@ const errCodeJoin = obj => {
   }
 };
 
-const errCode = {
+const userErrCode = {
   code: '01',
-  a: {
-    code: '02',
-    b: '03',
-    c: '04',
+  auth: {
+    code: '00',
   },
-  d: {
-    code: '05',
-    e: '06',
+  register: {
+    code: '01',
+    accountMustBeNumber: '01',
+    accountExisted: '02',
+  },
+  login: {
+    code: '02',
+    accountNoExist: '01',
+    passwordError: '02',
   },
 };
 
-errCodeJoin(errCode);
-
-console.log(errCode.a.b);
-
-// const errCode = {
-//   UnknownErr: '100000',
-//   User: {
-//     registryAccountParamErr: '010001',
-//     registryAccountExisted: '010003',
-//     loginAccountNoexist: '010004',
-//     loginPasswordError: '010005',
-//   },
-// };
-//
-// module.exports = errCode;
+// **注意**
+errCodeJoin(userErrCode);
+module.export = {
+  userErrCode,
+};
