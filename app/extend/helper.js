@@ -19,6 +19,23 @@ const decrypt = (encrypted, key) => {
   return decrypted;
 };
 
+// 继承Error类
+// UnknownError类
+function UnknownError(filename, funcname) {
+  this.name = 'Unknown Error';
+  this.message = `[${this.name}] 发生在${filename}.js ${funcname}`;
+  this.stack = (new Error()).stack;
+  this.code = '1000000';
+}
+UnknownError.prototype = Object.create(Error.prototype);
+UnknownError.prototype.constructor = UnknownError;
+// 基础Error类
+// function BaseError() {
+// //  TODO
+// }
+// BaseError.prototype = Object.create(Error.prototype);
+// BaseError.prototype.constructor = BaseError;
+
 module.exports = {
   createError(msg, code) {
     const err = new Error(msg);
