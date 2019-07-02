@@ -34,6 +34,6 @@ const userErrCode = {
 
 // **注意**
 errCodeJoin(userErrCode);
-module.export = {
+module.exports = {
   userErrCode,
 };
