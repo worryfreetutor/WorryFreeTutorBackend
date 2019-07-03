@@ -5,7 +5,7 @@
 // const obj = {code:'01', a:{code:'02',b:'03'} }
 const errCodeJoin = obj => {
   for (const item in obj) {
-    if (obj.hasOwnProperty(item) && item !== 'code') {
+    if (item !== 'code') {
       obj[item] = new Proxy(obj[item], {
         get(target) {
           return `${obj.code}${target.code}${Reflect.get(...arguments)}`;
@@ -29,6 +29,7 @@ const userErrCode = {
     code: '02',
     accountNoExist: '01',
     passwordError: '02',
+    tokenExpired: '03',
   },
 };
 
