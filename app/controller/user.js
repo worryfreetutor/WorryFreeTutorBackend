@@ -37,7 +37,6 @@ class UserController extends Controller {
     const { account, password } = ctx.request.body;
     const { access_token, refresh_token } = await ctx.service.login.login(account, password);
     ctx.body = {
-      code: 0,
       access_token,
       refresh_token,
     };
@@ -47,7 +46,6 @@ class UserController extends Controller {
     const refresh_token = ctx.header.authorization;
     const access_token = await ctx.service.login.refresh(refresh_token);
     ctx.body = {
-      code: 0,
       access_token,
     };
   }

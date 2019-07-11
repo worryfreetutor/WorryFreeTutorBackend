@@ -20,9 +20,9 @@ const decrypt = (encrypted, key) => {
 
 // 继承Error类
 // UnknownError类
-function UnknownError(filename, funcname) {
+function UnknownError(message) {
   this.name = 'Unknown Error';
-  this.message = `[${this.name}] 发生在${filename}.js ${funcname}`;
+  this.message = `[${this.name}] ${message}`;
   this.stack = (new Error()).stack;
   this.code = '1000000';
 }
@@ -37,12 +37,13 @@ UnknownError.prototype.constructor = UnknownError;
 
 module.exports = {
   createError(msg, code) {
-    const err = new Error(msg);
+    let err;
     if (code) {
+      err = new Error(msg);
       err.code = code;
     } else {
-      err.code = '1000000';
-      this.ctx.logger.warn(`未知错误 ${err.message}`);
+      err = new UnknownError(msg);
+      this.ctx.logger.warn(`${err.message}`);
     }
     return err;
   },

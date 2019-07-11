@@ -4,7 +4,7 @@ const Service = require('egg').Service;
 
 class StuValidateService extends Service {
   /**
-   * 通过微信登录接口进行学生账号验证
+   * 通过stu微信登录接口进行学生账号验证
    * @param stu_account
    * @param stu_passaword
    * @returns boolean
