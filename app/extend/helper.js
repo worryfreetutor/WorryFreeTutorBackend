@@ -1,7 +1,6 @@
 'use strict';
 
 const crypto = require('crypto');
-const errCode = require('../../config/errCode');
 
 // 加密函数
 const encrypt = (data, key) => {
@@ -19,14 +18,32 @@ const decrypt = (encrypted, key) => {
   return decrypted;
 };
 
+// 继承Error类
+// UnknownError类
+function UnknownError(message) {
+  this.name = 'Unknown Error';
+  this.message = `[${this.name}] ${message}`;
+  this.stack = (new Error()).stack;
+  this.code = '1000000';
+}
+UnknownError.prototype = Object.create(Error.prototype);
+UnknownError.prototype.constructor = UnknownError;
+// 基础Error类
+// function BaseError() {
+// //  TODO
+// }
+// BaseError.prototype = Object.create(Error.prototype);
+// BaseError.prototype.constructor = BaseError;
+
 module.exports = {
   createError(msg, code) {
-    const err = new Error(msg);
+    let err;
     if (code) {
+      err = new Error(msg);
       err.code = code;
     } else {
-      err.code = errCode.UnknownErr;
-      this.ctx.logger.warn(`未知错误 ${err.message}`);
+      err = new UnknownError(msg);
+      this.ctx.logger.warn(`${err.message}`);
     }
     return err;
   },

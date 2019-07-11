@@ -1,6 +1,6 @@
 'use strict';
 const Service = require('egg').Service;
-const errCode = require('../../config/errCode');
+const userErrCode = require('../../config/errCode').userErrCode;
 
 class LoginService extends Service {
   async login(account, password) {
@@ -19,12 +19,12 @@ class LoginService extends Service {
       throw ctx.helper.createError('serviceLogin未知错误');
     }
     if (!user) {
-      throw ctx.helper.createError('该用户没有注册', errCode.User.loginAccountNoexist);
+      throw ctx.helper.createError('该用户没有注册', userErrCode.login.accountNoExist);
     }
     // 判断密码是否与数据库密码一致
     const dbPassword = ctx.helper.decrypt(user.password, app.config.userEncryptKey);
     if (dbPassword !== password) {
-      throw ctx.helper.createError('密码错误！', errCode.User.loginPasswordError);
+      throw ctx.helper.createError('密码错误！', userErrCode.login.passwordError);
     }
     // 使用jwt创建用户对应token
     const secret = app.config.jwt.secret;

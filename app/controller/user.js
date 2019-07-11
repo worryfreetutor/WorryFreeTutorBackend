@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const errCode = require('../../config/errCode');
+const userErrCode = require('../../config/errCode').userErrCode;
 
 class UserController extends Controller {
   // 注册
@@ -15,18 +15,11 @@ class UserController extends Controller {
         type: 'string',
         min: 6,
       },
-      repassword: {
-        type: 'string',
-        min: 6,
-      },
     }, ctx.body);
-    const { account, password, repassword } = ctx.request.body;
+    const { account, password } = ctx.request.body;
     const isPhone = str => /^\d+$/.test(str);
     if (!isPhone(account)) {
-      throw ctx.helper.createError('账号必须为有效手机号', errCode.User.registryAccountParamErr);
-    }
-    if (password !== repassword) {
-      throw ctx.helper.createError('两次输入的密码不一致', errCode.User.registryRepassDiff);
+      throw ctx.helper.createError('账号必须为有效手机号', userErrCode.register.accountMustBeNumber);
     }
     const res = await ctx.service.user.register(account, password);
     ctx.body = res;
@@ -44,17 +37,15 @@ class UserController extends Controller {
     const { account, password } = ctx.request.body;
     const { access_token, refresh_token } = await ctx.service.login.login(account, password);
     ctx.body = {
-      code: 0,
       access_token,
       refresh_token,
     };
   }
   async refresh() {
     const { ctx } = this;
-    const account = ctx.session.account;
-    const access_token = await ctx.service.login.refresh(account);
+    const refresh_token = ctx.header.authorization;
+    const access_token = await ctx.service.login.refresh(refresh_token);
     ctx.body = {
-      code: 0,
       access_token,
     };
   }
