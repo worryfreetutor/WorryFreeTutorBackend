@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "XiaoCY135!",
-    "database": "wft-dev",
+    "database": "wft_dev",
     "host": "49.234.6.109",
     "dialect": "mysql"
   },

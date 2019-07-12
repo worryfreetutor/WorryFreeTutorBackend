@@ -26,7 +26,7 @@ module.exports = appInfo => {
       port: 3306,
       username: 'root',
       password: 'gongyongMIMA666!',
-      database: 'wft-dev',
+      database: 'wft_dev',
     },
   };
 
