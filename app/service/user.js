@@ -32,6 +32,10 @@ class UserService extends Service {
       message: '注册成功',
     };
   }
+
+  /**
+   * 完善用户信息
+   */
 }
 
 module.exports = UserService;

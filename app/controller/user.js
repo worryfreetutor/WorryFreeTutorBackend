@@ -49,6 +49,20 @@ class UserController extends Controller {
       access_token,
     };
   }
+
+  /**
+   * 完善用户信息
+   * 目前用户信息
+   * nickname 昵称 string
+   * sex 性别 enum { MALE, FEMALE, SECRET }
+   * grade 年级 string
+   * intro 自我介绍 string
+   * other 待定
+   */
+  async completeInfo() {
+    const { ctx } = this;
+    // TODO
+  }
 }
 
 module.exports = UserController;

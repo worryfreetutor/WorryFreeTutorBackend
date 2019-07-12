@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": "XiaoCY135!",
-    "database": "backend",
-    "host": "111.230.147.75",
+    "database": "wft-dev",
+    "host": "49.234.6.109",
     "dialect": "mysql"
   },
   "test": {

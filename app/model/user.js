@@ -24,6 +24,12 @@ module.exports = app => {
     sex: {
       type: ENUM('MALE', 'FEMALE', 'SECRET'),
     },
+    grade: {
+      type: STRING(12),
+    },
+    intro: {
+      type: STRING(1000),
+    },
     isTeacher: {
       type: BOOLEAN,
     },

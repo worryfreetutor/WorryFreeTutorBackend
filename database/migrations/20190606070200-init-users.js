@@ -27,6 +27,14 @@ module.exports = {
         type: ENUM('MALE', 'FEMALE', 'SECRET'),
         defaultValue: 'SECRET',
       },
+      grade: {
+        type: STRING(12),
+        allowNull: true,
+      },
+      intro: {
+        type: STRING(1000),
+        allowNull: true,
+      },
       is_teacher: {
         type: BOOLEAN,
         defaultValue: false,
