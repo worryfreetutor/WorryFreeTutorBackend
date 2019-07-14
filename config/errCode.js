@@ -31,6 +31,11 @@ const userErrCode = {
     passwordError: '02',
     tokenExpired: '03',
   },
+  updateInfo: {
+    code: '03',
+    paramsError: '01',
+    noUpdateItem: '02',
+  },
 };
 
 // **注意**

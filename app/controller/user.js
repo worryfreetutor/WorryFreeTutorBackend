@@ -54,14 +54,34 @@ class UserController extends Controller {
    * 完善用户信息
    * 目前用户信息
    * nickname 昵称 string
-   * sex 性别 enum { MALE, FEMALE, SECRET }
+   * sex 性别 enum { male,female,secret }
    * grade 年级 string
    * intro 自我介绍 string
    * other 待定
    */
-  async completeInfo() {
+  async updateInfo() {
     const { ctx } = this;
-    // TODO
+    ctx.validate({
+      nickname: 'string?',
+      sex: 'string?',
+      grade: 'string?',
+      intro: 'string?',
+    }, ctx.body);
+    const { nickname, sex, grade, intro } = ctx.request.body;
+    if (sex && sex !== 'male' && sex !== 'female' && sex !== 'secret') {
+      throw ctx.helper.createError('sex必须为male、female、secret之间的某一项', userErrCode.updateInfo.paramsError);
+    }
+    const account = ctx.session.account;
+    ctx.body = await ctx.service.user.updateUserInfo(account, nickname, sex, grade, intro);
+  }
+
+  /**
+   * 获取用户信息
+   */
+  async getInfo() {
+    const { ctx } = this;
+    const account = ctx.session.account;
+    ctx.body = await ctx.service.user.getUserInfo(account);
   }
 }
 
