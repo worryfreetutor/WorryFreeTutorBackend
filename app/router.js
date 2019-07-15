@@ -14,4 +14,6 @@ module.exports = app => {
   router.post('/user/update', middleware.getAccount(), controller.user.updateInfo);
   // 获取用户具体信息
   router.get('/user/info', middleware.getAccount(), controller.user.getInfo);
+  // 验证学生身份
+  router.post('/validate/student', middleware.getAccount(), controller.validate.validateStudent);
 };

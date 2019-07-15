@@ -36,6 +36,11 @@ const userErrCode = {
     paramsError: '01',
     noUpdateItem: '02',
   },
+  isValidate: {
+    code: '04',
+    stuAccountExist: '01',
+    stuValidateFail: '02',
+  },
 };
 
 // **注意**
