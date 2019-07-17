@@ -41,6 +41,10 @@ const userErrCode = {
     stuAccountExist: '01',
     stuValidateFail: '02',
   },
+  uploadAvatar: {
+    code: '05',
+    uploadFail: '01',
+  },
 };
 
 // **注意**

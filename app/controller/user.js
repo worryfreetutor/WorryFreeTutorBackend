@@ -83,6 +83,17 @@ class UserController extends Controller {
     const account = ctx.session.account;
     ctx.body = await ctx.service.user.getUserInfo(account);
   }
+
+  /**
+   * 更新用户头像
+   */
+  async updateUserAvatar() {
+    const { ctx } = this;
+    const account = ctx.session.account;
+    // const account = '12345678';
+    await ctx.service.uploadImg.updateUserAvatar(account);
+    ctx.body = '更新成功';
+  }
 }
 
 module.exports = UserController;

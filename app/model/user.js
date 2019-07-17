@@ -30,7 +30,7 @@ module.exports = app => {
     intro: {
       type: STRING(1000),
     },
-    isTeacher: {
+    isParent: {
       type: BOOLEAN,
     },
     isStudent: {

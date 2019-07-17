@@ -28,6 +28,19 @@ module.exports = appInfo => {
       password: 'gongyongMIMA666!',
       database: 'wft_dev',
     },
+    view: {
+      defaultViewEngine: 'nunjucks',
+    },
+    multipart: {
+      mode: 'file',
+    },
+    cos: {
+      SecretId: 'AKID70d08bVqeDXbQUJ7YnqjNl1751lHxXHl',
+      SecretKey: '',
+      Bucket: 'feapp-test-1256757654', // 存储桶名称
+      Region: 'ap-guangzhou', // Bucket 所在地域
+      UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹
+    },
   };
 
   // use for cookie sign key, should change to your own and keep security
@@ -35,6 +48,7 @@ module.exports = appInfo => {
 
   // add your middleware config here
   config.middleware = [ 'errHandler' ];
+  // config.middleware = [];
 
   // add your user config here
   const userConfig = {
