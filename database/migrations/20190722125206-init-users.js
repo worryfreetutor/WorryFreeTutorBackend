@@ -149,7 +149,7 @@ module.exports = {
         allowNull: false,
       },
       status: {
-        type: ENUM('SUCCESS', 'fail', 'ONGOING'),
+        type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
         allowNull: false,
       },
       is_finished: {
@@ -177,7 +177,7 @@ module.exports = {
         allowNull: false,
       },
       status: {
-        type: ENUM('SUCCESS', 'fail', 'ONGOING'),
+        type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
         allowNull: false,
       },
       is_finished: {
