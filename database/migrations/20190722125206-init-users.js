@@ -6,6 +6,7 @@ module.exports = {
     await queryInterface.createTable('student_items', {
       item_id: {
         type: STRING(16),
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false,
         unique: true,
@@ -47,7 +48,8 @@ module.exports = {
         allowNull: false,
       },
       sex_demand: {
-        type: ENUM('MALE', 'FEMALE', 'SECRET'),
+        type: ENUM('MALE', 'FEMALE', 'UNLIMITED'),
+        defaultValue: 'UNLIMITED',
         allowNull: false,
       },
       other_demand: {
@@ -60,6 +62,7 @@ module.exports = {
       },
       status: {
         type: ENUM('SUCCESS', 'EXPIRED', 'ONGOING'),
+        defaultValue: 'ONGOING',
         allowNull: false,
       },
       create_time: DATE,
@@ -68,6 +71,7 @@ module.exports = {
     await queryInterface.createTable('teacher_items', {
       item_id: {
         type: STRING(16),
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false,
         unique: true,
@@ -110,7 +114,7 @@ module.exports = {
       },
       tutor_num: {
         type: STRING(8),
-        defaltValue: '0',
+        defaultValue: '0',
       },
       self_introduction: {
         type: STRING(1000),
@@ -126,6 +130,7 @@ module.exports = {
       },
       status: {
         type: ENUM('SUCCESS', 'EXPIRED', 'ONGOING'),
+        defaultValue: 'ONGOING',
         allowNull: false,
       },
       created_at: DATE,
@@ -150,6 +155,7 @@ module.exports = {
       },
       status: {
         type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
+        defaultValue: 'ONGOING',
         allowNull: false,
       },
       is_finished: {
@@ -178,6 +184,7 @@ module.exports = {
       },
       status: {
         type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
+        defaultValue: 'ONGOING',
         allowNull: false,
       },
       is_finished: {
