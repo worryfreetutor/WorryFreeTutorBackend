@@ -150,7 +150,7 @@ module.exports = {
       },
       expire_date: DATE,
       updated_at: DATE,
-      create_at: DATE,
+      created_at: DATE,
     });
     // 老师找学生项目表
     await queryInterface.createTable('teacher_items', {
@@ -446,8 +446,8 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
-      create_at: DATE,
-      update_at: DATE,
+      created_at: DATE,
+      updated_at: DATE,
     });
     // 老师项目评价表
     await queryInterface.createTable('teacher_evaluation_form', {
@@ -488,8 +488,8 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
-      create_at: DATE,
-      update_at: DATE,
+      created_at: DATE,
+      updated_at: DATE,
     });
   },
 
