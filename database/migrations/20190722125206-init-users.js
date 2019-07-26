@@ -18,10 +18,6 @@ module.exports = {
         type: STRING(32),
         allowNull: true,
       },
-      name: {
-        type: STRING(16),
-        allowNull: true,
-      },
       avatar: {
         type: STRING(256),
         allowNull: true,
