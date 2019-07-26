@@ -150,7 +150,7 @@ module.exports = {
       },
       expire_date: DATE,
       updated_at: DATE,
-      create_time: DATE,
+      create_at: DATE,
     });
     // 老师找学生项目表
     await queryInterface.createTable('teacher_items', {
