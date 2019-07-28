@@ -325,6 +325,10 @@ module.exports = {
           key: 'account',
         },
       },
+      sex: {
+        type: ENUM('MALE', 'FEMALE'),
+        defaultValue: 'MALE',
+      },
       tutorial: {
         type: STRING(12),
         allowNull: false,
@@ -367,6 +371,10 @@ module.exports = {
           model: 'user',
           key: 'account',
         },
+      },
+      sex: {
+        type: ENUM('MALE', 'FEMALE'),
+        defaultValue: 'MALE',
       },
       birthplace: {
         type: STRING(32),
