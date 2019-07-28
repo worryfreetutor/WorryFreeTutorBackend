@@ -312,7 +312,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         references: {
-          model: 'student_items',
+          model: 'teacher_items',
           key: 'item_id',
         },
       },
@@ -359,7 +359,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         references: {
-          model: 'teacher_items',
+          model: 'student_items',
           key: 'item_id',
         },
       },
