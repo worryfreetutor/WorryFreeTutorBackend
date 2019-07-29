@@ -222,6 +222,7 @@ module.exports = {
       item_id: {
         type: INTEGER,
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'student_items',
           key: 'item_id',
@@ -230,6 +231,7 @@ module.exports = {
       teacher_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -238,6 +240,7 @@ module.exports = {
       student_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -266,6 +269,7 @@ module.exports = {
       item_id: {
         type: INTEGER,
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'teacher_items',
           key: 'item_id',
@@ -274,6 +278,7 @@ module.exports = {
       teacher_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -282,6 +287,7 @@ module.exports = {
       student_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
