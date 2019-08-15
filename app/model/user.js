@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, ENUM, BOOLEAN } = app.Sequelize;
+  const { STRING, ENUM, BOOLEAN, INTEGER } = app.Sequelize;
   const User = app.model.define('User', {
     account: {
       type: STRING(32),
@@ -17,6 +17,10 @@ module.exports = app => {
       type: STRING(32),
       allowNull: true,
     },
+    name: {
+      type: STRING(16),
+      allowNull: true,
+    },
     avatar: {
       type: STRING(256),
       allowNull: true,
@@ -24,22 +28,48 @@ module.exports = app => {
     sex: {
       type: ENUM('MALE', 'FEMALE', 'SECRET'),
     },
-    grade: {
-      type: STRING(12),
-    },
-    intro: {
+    per_signature: {
       type: STRING(1000),
     },
-    isParent: {
+    is_teacher: {
       type: BOOLEAN,
     },
-    isStudent: {
+    is_student: {
       type: BOOLEAN,
+    },
+    tutor_num: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    student_num: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    average_score: {
+      type: INTEGER,
+      defaultValue: 0,
     },
   },
   {
     tableName: 'user',
     timestamps: true,
+    scopes: {
+      // 不需要token认证可以获取的信息
+      getInfo: {
+        attributes: [ 'account', 'nickname', 'avatar', 'sex', 'per_signature', 'tutor_num', 'average_score' ],
+      },
+      // 需要token认证获取的信息
+      getOwnInfo: {
+        attributes: [ 'account', 'nickname', 'name', 'avatar', 'sex', 'per_signature', 'is_teacher', 'is_student', 'tutor_num', 'student_num', 'average_score' ],
+      },
+    },
+    // TODO
+    // // 综合评分 用于排序
+    // getterMethods: {
+    //   rankScore() {
+    //     // return ... ;
+    //   },
+    // },
   });
   return User;
 };

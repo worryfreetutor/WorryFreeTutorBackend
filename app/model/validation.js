@@ -14,6 +14,7 @@ module.exports = app => {
     },
     authentication: {
       type: ENUM('STU', 'TEA'),
+      primaryKey: true,
     },
     stu_account: {
       type: STRING(32),

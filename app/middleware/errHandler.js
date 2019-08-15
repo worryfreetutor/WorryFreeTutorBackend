@@ -5,19 +5,18 @@ module.exports = () => {
     ctx.set('Content-Type', 'application/json');
     try {
       await next();
-      const res = ctx.body;
       ctx.status = ctx.status === 404 ? 404 : 200;
+      const res = typeof ctx.body === 'string' ? { message: ctx.body } : ctx.body;
       ctx.body = {
         code: '0',
         ...res,
       };
     } catch (err) {
-      const body = {
-        code: err.code,
+      ctx.status = 200;
+      ctx.body = {
+        code: err.code !== 'invalid_param' ? err.code : '000001',
         message: err.message ? err.message : err.toString(),
       };
-      ctx.status = 200;
-      ctx.body = JSON.stringify(body);
       // 所有的异常都在 app 上触发一个 error 事件
       ctx.app.emit('error', err, ctx);
     }

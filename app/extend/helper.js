@@ -18,6 +18,14 @@ const decrypt = (encrypted, key) => {
   return decrypted;
 };
 
+// 过滤掉obj中不属于arr或者空值的属性
+const objFilter = (obj, arr) => {
+  for (const key in obj) {
+    if (!arr.includes(key) || !obj[key]) delete obj[key];
+  }
+  return obj;
+};
+
 // 继承Error类
 // UnknownError类
 function UnknownError(message) {
@@ -49,4 +57,5 @@ module.exports = {
   },
   encrypt,
   decrypt,
+  objFilter,
 };
