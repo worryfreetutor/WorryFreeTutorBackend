@@ -38,7 +38,8 @@ class StuRegFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/stuRegForm.js update] ${e.toString()}`);
     }
   }
   // 删
@@ -52,7 +53,8 @@ class StuRegFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/stuRegForm.js delete] ${e.toString()}`);
     }
   }
   // 查
@@ -67,7 +69,8 @@ class StuRegFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/stuRegForm.js _find] ${e.toString()}`);
     }
     return res;
   }
@@ -93,7 +96,8 @@ class StuRegFormService extends Service {
         raw,
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/stuRegForm.js getJoinerById] ${e.toString()}`);
     }
     return res;
   }
@@ -113,7 +117,8 @@ class StuRegFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/stuRegForm.js changeStuChooseStatus] ${e.toString()}`);
     }
   }
 }

@@ -64,9 +64,16 @@ class TeacherController extends Controller {
    */
   async getItemDetail() {
     const { ctx } = this;
-    // TODO 拼接上报名信息
+    const data = {
+      info: await this._getItemById(ctx),
+      registration: await ctx.model.StuRegForm.scope('simple').findAll({
+        where: {
+          item_id: ctx.request.query.item_id,
+        },
+      }),
+    };
     ctx.body = {
-      data: await this._getItemById(ctx),
+      data,
     };
   }
 
@@ -114,7 +121,7 @@ class TeacherController extends Controller {
    */
   async updateItem() {
     const { ctx } = this;
-    const res = await this._getItemById(ctx, true, ctx.session.account, true);
+    const res = await this._getItemById(ctx, true, ctx.session.account, true, true);
     const item_id = res.item_id;
     await this._validateSexParam(ctx);
     await ctx.service.teacherItem.update(item_id, ctx.request.body);
@@ -122,13 +129,24 @@ class TeacherController extends Controller {
   }
 
   /**
-   * 教师删除自己的项目 GET
+   * 教师删除/取消自己的项目 GET
    */
   async deleteItem() {
     const { ctx } = this;
     const res = await this._getItemById(ctx, true, ctx.session.account, true);
+    // 验证是否有人报名参加
+    let joiner;
+    try {
+      joiner = await ctx.model.StuRegForm.findOne({
+        where: { item_id: res.item_id },
+      });
+    } catch (e) {
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 controller/teacher.js deleteItem] ${e.toString()}`);
+    }
+    if (joiner) throw ctx.helper.createError('此项目已有报名参与者，无法取消', teaItemErrCode.teacherItem.haveJoinerNotCancel);
     await ctx.service.teacherItem.delete(res.item_id);
-    ctx.body = '删除成功';
+    ctx.body = '项目取消成功';
   }
 
   /**
@@ -243,7 +261,6 @@ class TeacherController extends Controller {
     ctx.body = '取消成功';
   }
 
-  // TODO ....
   /**
    * 教师设置自己的项目为完成状态 GET
    * @return {Promise<void>}
@@ -253,15 +270,20 @@ class TeacherController extends Controller {
     const account = ctx.session.account;
     const item = await this._getItemById(ctx, true, account, true, true);
     const item_id = item.item_id;
-    // TODO 事务
-    await ctx.service.teacherItem.updateStatus(item_id, 'SUCCESS');
     // 生成交易表记录
     const joiner = await ctx.service.stuRegForm.getJoinerById(item_id, true, 'choosed');
+    if (joiner === []) throw ctx.helper.createError('无人参加此项目，无法设置成功状态，可取消该项目', teaItemErrCode.stuJoinItem.notJoinersNotSuccess);
     joiner.forEach(ele => { ele.teacher_id = account; });
     // console.log(joiner);
-    await ctx.service.teacherTransaction.bulkCreate(joiner);
-    // 将个人教授数加一，若没有人报名则不算
-    await ctx.service.user.addTutorNum(account);
+    // TODO 事务
+    await Promise.all([
+      // 更新项目记录状态
+      ctx.service.teacherItem.updateStatus(item_id, 'SUCCESS'),
+      // 根据joiner创建交易表
+      ctx.service.teacherTransaction.bulkCreate(joiner),
+      // 将个人教授数加一
+      ctx.service.user.addTutorNum(account),
+    ]);
     ctx.body = '设置完成状态成功';
   }
 
@@ -280,21 +302,22 @@ class TeacherController extends Controller {
     ctx.validate({
       score: { type: 'string' },
       comment: { type: 'string' },
-      is_anonymous: { type: 'string' },
+      is_anonymous: [ '0', '1' ],
     }, ctx.request.body);
-    // 验证score
+    // TODO 验证score
     const score = parseInt(ctx.request.body.score);
-    // TODO 错误码
     if (!score) throw ctx.createError('score参数不合法', teaItemErrCode.teaEvaForm.scoreParamError);
     if (score < 0 || score > 100) throw ctx.createError('score范围在[0,100]', teaItemErrCode.teaEvaForm.scoreRangeError);
     // 验证通过后
     // TODO 事务
-    // 更新评论表
-    await ctx.service.teaEvaForm.create(item_id, teacher_id, account, ctx.request.body);
-    // 更新交易表是否评论状态
-    await ctx.service.teacherTransaction.setEvaluatedStatus(item_id, account, true);
-    // 更新用户表平均评分
-    await ctx.service.user.calAveScore(teacher_id, score);
+    await Promise.all([
+      // 更新评论表
+      ctx.service.teaEvaForm.create(item_id, teacher_id, account, ctx.request.body),
+      // 更新交易表是否评论状态
+      ctx.service.teacherTransaction.setEvaluatedStatus(item_id, account, true),
+      // 更新用户表平均评分
+      ctx.service.user.calAveScore(teacher_id, score),
+    ]);
     ctx.body = '评价成功';
   }
 
@@ -312,7 +335,7 @@ class TeacherController extends Controller {
       comment: { type: 'string' },
     }, ctx.request.body);
     await ctx.service.teaEvaForm.updateComment(item_id, account, ctx.request.body.comment);
-    ctx.body = '修改成功';
+    ctx.body = '修改评价内容成功';
   }
 
   /**
@@ -322,9 +345,10 @@ class TeacherController extends Controller {
   async getItemComments() {
     const { ctx } = this;
     const item = await this._getItemById(ctx, false, '', false, true, true);
-    const score_rank = ctx.request.query.score_rank || 'all';
+    // TODO 高低分段设置
+    const score_rank = ctx.request.query.score_rank;
     ctx.body = {
-      data: await ctx.service.teaEvaForm.findItemComments(item.item_id, `${score_rank}Score`),
+      data: await ctx.service.teaEvaForm.findItemComments(item.item_id, score_rank),
     };
   }
 }

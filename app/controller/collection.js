@@ -20,7 +20,7 @@ class CollectionController extends Controller {
   async getCollectionsList() {
     const { ctx } = this;
     const account = ctx.session.account;
-    // TODO 外键关联上item信息
+    // TODO 外键关联上item信息 删除情况的处理
     const res = await ctx.model.TeaItemsCollection.findAll({
       attributes: [ 'id', 'createdAt' ],
       where: { account },

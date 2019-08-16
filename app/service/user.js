@@ -43,7 +43,7 @@ class UserService extends Service {
     if (options.sex) options.sex = options.sex.toUpperCase();
     if (JSON.stringify(options) === '{}') {
       // throw ctx.helper.createError('无更新项', userErrCode.updateInfo.noUpdateItem);
-      return;
+      return '更新成功';
     }
     try {
       await ctx.model.User.update(options, {
@@ -58,7 +58,7 @@ class UserService extends Service {
     return '更新成功';
   }
 
-  // =========== 2019 07 31 ======================
+  //
   /**
    * 获取用户信息
    */
@@ -119,7 +119,8 @@ class UserService extends Service {
         student_num: student_num + 1,
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/user.js calAveScore] ${e.toString()}`);
     }
   }
 }

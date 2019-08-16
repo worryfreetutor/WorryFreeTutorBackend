@@ -14,7 +14,8 @@ class TeaEvaFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teaEvaForm.js find] ${e.toString()}`);
     }
     return res;
   }
@@ -22,8 +23,8 @@ class TeaEvaFormService extends Service {
   async findItemComments(item_id, scope = 'all') {
     // scope 用于筛选分数段
     const { ctx } = this;
-    const rank = [ 'highScore', 'middleScore', 'lowScore' ];
-    scope = rank.includes(scope) ? scope : null;
+    const rank = [ 'high', 'middle', 'low' ];
+    scope = rank.includes(scope) ? `${scope}Score` : null;
     let res;
     try {
       res = await ctx.model.TeaEvaForm.scope(scope).findAll({
@@ -32,7 +33,8 @@ class TeaEvaFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teaEvaForm.js findItemComments] ${e.toString()}`);
     }
     return res;
   }
@@ -49,7 +51,8 @@ class TeaEvaFormService extends Service {
         ...options,
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teaEvaForm.js create] ${e.toString()}`);
     }
   }
   // 更新comment
@@ -65,7 +68,8 @@ class TeaEvaFormService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teaEvaForm.js updateComment] ${e.toString()}`);
     }
   }
 }

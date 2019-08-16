@@ -10,7 +10,8 @@ class TeacherTransactionService extends Service {
     try {
       res = await ctx.model.TeacherTransaction.bulkCreate(arr);
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherTransaction.js bulkCreate] ${e.toString()}`);
     }
     return res;
   }
@@ -27,7 +28,8 @@ class TeacherTransactionService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherTransaction.js setEvaluatedStatus] ${e.toString()}`);
     }
   }
   // 查
@@ -42,7 +44,8 @@ class TeacherTransactionService extends Service {
         },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherTransaction.js _find] ${e.toString()}`);
     }
     return res;
   }

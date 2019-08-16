@@ -8,11 +8,12 @@ class TeacherItemService extends Service {
   // 增
   async create(account, name, options) {
     const { ctx } = this;
+    if (!name) throw ctx.helper.createError('[未知错误 service/teacherItem.js] create name不存在');
     let res;
     options = ctx.helper.objFilter(options, fieldList);
     if (options.expire_date) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(options)) {
-        throw ctx.helper.createError('日期参数错误');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(options.expire_date)) {
+        throw ctx.helper.createError('日期参数错误', teaItemErrCode.teacherItem.paramError);
       }
     }
     try {
@@ -21,8 +22,12 @@ class TeacherItemService extends Service {
         ...options,
       });
     } catch (e) {
-      // TODO
-      console.log(e);
+      if (e.name === 'SequelizeValidationError') {
+        throw ctx.helper.createError('过期日期必须晚于当前日期', teaItemErrCode.teacherItem.paramError);
+      } else {
+        ctx.logger.warn(e);
+        throw ctx.helper.createError(`[未知错误 service/teacherItem.js create] ${e.toString()}`);
+      }
     }
     return res;
   }
@@ -35,7 +40,8 @@ class TeacherItemService extends Service {
         where: { item_id },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherItem.js update] ${e.toString()}`);
     }
   }
   // 更新状态
@@ -48,7 +54,8 @@ class TeacherItemService extends Service {
         where: { item_id },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherItem.js updateStatus] ${e.toString()}`);
     }
   }
   // 删
@@ -59,7 +66,8 @@ class TeacherItemService extends Service {
         where: { item_id },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherItem.js delete] ${e.toString()}`);
     }
   }
   // 查
@@ -71,7 +79,8 @@ class TeacherItemService extends Service {
         where: { item_id },
       });
     } catch (e) {
-      console.log(e);
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[未知错误 service/teacherItem.js findByItemId] ${e.toString()}`);
     }
     // 如果找不到
     if (!res) throw ctx.helper.createError('此item_id不存在，无法操作', teaItemErrCode.teacherItem.itemIdNotFound);

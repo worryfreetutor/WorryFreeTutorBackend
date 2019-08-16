@@ -17,25 +17,32 @@ class ValidateService extends Service {
     const jar = request_promise.jar();
     const request = request_promise.defaults({ jar });
     const wxLoginUrl = 'http://wechat.stu.edu.cn/wechat/login/login_verify';
-    const loginResult = await request({
-      method: 'POST',
-      url: wxLoginUrl,
-      form: {
-        ldap_account: stu_account,
-        ldap_password: stu_passaword,
-        btn_ok: '登录',
-        source_type: '',
-        openid: '',
-      },
-    });
-    if (loginResult.indexOf('帐号登陆成功') !== -1) {
-      const getNameUrl = 'http://wechat.stu.edu.cn/wechat/smartcard/Smartcard_cardbalance';
-      const getNameResult = await request({
-        method: 'GET',
-        url: getNameUrl,
+    let userName;
+    try {
+      const loginResult = await request({
+        method: 'POST',
+        url: wxLoginUrl,
+        form: {
+          ldap_account: stu_account,
+          ldap_password: stu_passaword,
+          btn_ok: '登录',
+          source_type: '',
+          openid: '',
+        },
       });
-      return getNameResult.match(/尊敬的(\S*):/)[1];
+      if (loginResult.indexOf('帐号登陆成功') !== -1) {
+        const getNameUrl = 'http://wechat.stu.edu.cn/wechat/smartcard/Smartcard_cardbalance';
+        const getNameResult = await request({
+          method: 'GET',
+          url: getNameUrl,
+        });
+        userName = getNameResult.match(/尊敬的(\S*):/)[1];
+      }
+    } catch (e) {
+      ctx.logger.warn(e);
+      throw ctx.helper.createError('stu账号密码验证错误', userErrCode.isValidate.stuValidateFail);
     }
+    if (userName) return userName;
     throw ctx.helper.createError('stu账号密码验证错误', userErrCode.isValidate.stuValidateFail);
   }
 
@@ -77,19 +84,21 @@ class ValidateService extends Service {
     // 成功通过验证，更新数据库
     try {
       // TODO 改为事务
-      // 更新validation表
-      await ctx.model.Validation.create({
-        account,
-        authentication: 'TEA',
-        stu_account,
-      });
-      // 更新user表
-      await ctx.model.User.update({
-        name: user_name,
-        is_teacher: true,
-      }, {
-        where: { account },
-      });
+      await Promise.all([
+        // 更新validation表
+        ctx.model.Validation.create({
+          account,
+          authentication: 'TEA',
+          stu_account,
+        }),
+        // 更新user表
+        ctx.model.User.update({
+          name: user_name,
+          is_teacher: true,
+        }, {
+          where: { account },
+        }),
+      ]);
     } catch (e) {
       throw ctx.helper.createError(`[service/user.js 验证学生用户>>添加更新记录] ${e.toString()}`);
     }
@@ -110,18 +119,22 @@ class ValidateService extends Service {
     }
     // 验证通过，更新数据库
     try {
-      // 更新验证表
-      await ctx.model.Validation.create({
-        account,
-        authentication: 'STU',
-        id_number,
-      });
-      // 更新用户表
-      await ctx.model.User.update({
-        is_student: true,
-      }, {
-        where: { account },
-      });
+      // TODO 事务
+      await Promise.all([
+        // 更新验证表
+        ctx.model.Validation.create({
+          account,
+          authentication: 'STU',
+          id_number,
+        }),
+        // 更新用户表
+        ctx.model.User.update({
+          is_student: true,
+        }, {
+          where: { account },
+        }),
+      ]);
+
     } catch (e) {
       throw ctx.helper.createError(`[service/validate.js validateStudent.js] 未知错误 ${e.toString()}`);
     }

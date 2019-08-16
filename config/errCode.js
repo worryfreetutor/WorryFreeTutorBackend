@@ -63,23 +63,8 @@ const validateErrCode = {
 
 const teaItemErrCode = { // 教师项目相关错误码
   code: '04',
-  // getItemById: {
-  //   code: '01',
-  //   NotFound: '01',
-  //   notAuthor: '02',
-  // },
-  // updateItem: {
-  //   code: '02',
-  //   paramsError: '01',
-  // },
-  // stuRegForm: {
-  //   code: '04',
-  //   notAuth: '01',
-  // },
-  // 以上废弃
-  // TODO
   teacherItem: {
-    code: '05',
+    code: '01',
     // noItemIdParam: '00',
     itemIdNotFound: '01',
     notItemAuthor: '02',
@@ -87,21 +72,23 @@ const teaItemErrCode = { // 教师项目相关错误码
     onExpiredStatus: '04',
     onOngoingStatus: '05',
     paramError: '06',
+    haveJoinerNotCancel: '07',
   },
   stuJoinItem: {
-    code: '06',
+    code: '02',
     notAllowed: '01',
     hasJoined: '02',
     notJoined: '03',
+    notJoinersNotSuccess: '04',
   },
   transaction: {
-    code: '07',
+    code: '03',
     notSuccess: '01',
     hadEvaluated: '02',
     notEvaluated: '03',
   },
   teaEvaForm: {
-    code: '08',
+    code: '04',
     scoreParamError: '01',
     scoreRangeError: '02',
   },

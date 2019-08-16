@@ -1,6 +1,7 @@
 'use strict';
 const UserModel = require('./user');
 const { clone } = require('lodash');
+const moment = require('moment');
 
 // 教师项目模型
 module.exports = app => {
@@ -80,13 +81,14 @@ module.exports = app => {
       allowNull: true,
       validate: {
         // 验证当前时间是否合法
-        isAfter: new Date().toISOString().slice(0, 10),
+        isAfter: moment().format('YYYY-MM-DD').slice(0, 10),
       },
     },
   },
   {
     tableName: 'teacher_items',
     timestamps: true,
+    paranoid: true,
     scopes: {
       // 获取项目列表时的作用域
       itemlist: {

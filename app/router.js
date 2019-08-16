@@ -23,10 +23,8 @@ module.exports = app => {
   router.post('/validate/teacher', middleware.getAccount(), controller.validate.validateTeacher);
   // 验证学生身份（id_number）
   router.post('/validate/student', middleware.getAccount(), controller.validate.validateStudent);
-  // test
-  router.get('/upload/test', controller.test.show); // 待删除
-  // TODO 判断上传文件格式并限制（另外：文件大小）
-  router.post('/user/updateAvatar', middleware.getAccount(), controller.user.updateUserAvatar);
+  // TODO 判断上传文件格式并限制（另外：文件大小） 需要完善
+  router.post('/user/avatar', middleware.getAccount(), controller.user.updateUserAvatar);
 
   // teacher模块
   // 获取teacher项目的列表
@@ -46,7 +44,7 @@ module.exports = app => {
   router.post('/teacher/item/join/modify', middleware.getAccount(), controller.teacher.stuModifyRegForm);
   // 学生取消报名
   router.get('/teacher/item/join/cancel', middleware.getAccount(), controller.teacher.stuCancelReg);
-  // 查看教师项目报名信息（简）
+  // 查看教师项目报名信息（简） 上面api有
   // 查看教师项目报名信息（详）
   router.get('/teacher/item/join/info', middleware.getAccount(), controller.teacher.getItemJoinInfo);
   // 教师选择某学生
@@ -63,18 +61,21 @@ module.exports = app => {
   router.get('/teacher/item/comments/get', controller.teacher.getItemComments);
 
   // 历史模块
-  // 获取历史items
-  router.get('/history/items', middleware.getAccount(), controller.history.getHistoryItems);
-  // 获取历史交易
-  router.get('/history/transaction', middleware.getAccount(), controller.history.getHistoryTransaction);
-  // 获取历史评价
+  // 获取教师的所有项目列表
+  router.get('/teacher/items/all', middleware.getAccount(), controller.history.getHistoryItems);
+  // 获取所有交易记录
+  router.get('/history/transactions', middleware.getAccount(), controller.history.getAllTransaction);
+  // 获取所有自己评价的记录
   router.get('/history/comments', middleware.getAccount(), controller.history.getAllComments);
 
   // 收藏模块
-  // 获取收藏列表
+  // 获取项目收藏列表 // TODO 接上学生项目的
   router.get('/collect/list', middleware.getAccount(), controller.collection.getCollectionsList);
-  // 收藏某个项目
-  router.get('/collect/add', middleware.getAccount(), controller.collection.collectItem);
-  // 取消收藏某个项目
-  router.get('/collect/cancel', middleware.getAccount(), controller.collection.cancelCollectItem);
+  // 收藏某个教师项目
+  router.get('/collect/teacher/add', middleware.getAccount(), controller.collection.collectItem);
+  // 取消收藏某个教师项目
+  router.get('/collect/teacher/cancel', middleware.getAccount(), controller.collection.cancelCollectItem);
+
+  // 搜索
+  router.post('/search', controller.search.search);
 };

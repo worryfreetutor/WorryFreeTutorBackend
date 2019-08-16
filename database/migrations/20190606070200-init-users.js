@@ -156,6 +156,7 @@ module.exports = {
       },
       updated_at: DATE,
       created_at: DATE,
+      deleted_at: DATE,
     });
     // 老师找学生项目表
     await queryInterface.createTable('teacher_items', {
@@ -224,6 +225,7 @@ module.exports = {
       },
       created_at: DATE,
       updated_at: DATE,
+      deleted_at: DATE,
     });
     // 学生找老师项目交易记录表
     await queryInterface.createTable('student_transaction', {
