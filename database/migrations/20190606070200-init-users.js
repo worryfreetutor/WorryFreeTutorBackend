@@ -429,7 +429,7 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
-    // 学生项目评价表
+    // 学生项目评价表(学生项目中，学生对老师的评价）
     await queryInterface.createTable('student_evaluation_form', {
       item_id: {
         type: INTEGER,
@@ -474,7 +474,7 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
-    // 老师项目评价表
+    // 老师项目评价表(老师项目中，学生对老师的评价）
     await queryInterface.createTable('teacher_evaluation_form', {
       item_id: {
         type: INTEGER,

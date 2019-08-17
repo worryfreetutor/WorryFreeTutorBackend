@@ -5,7 +5,7 @@ const { teaItemErrCode } = require('../../config/errCode');
 const fieldList = [ 'sex', 'tutorial', 'location', 'free_time', 'stu_situation', 'other_situation' ];
 
 class StuRegFormService extends Service {
-  // TODO ...
+
   // 增
   // 报名
   async create(item_id, student_id, options) {

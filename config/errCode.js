@@ -62,7 +62,7 @@ const validateErrCode = {
 };
 
 const teaItemErrCode = { // 教师项目相关错误码
-  code: '04',
+  code: '03',
   teacherItem: {
     code: '01',
     // noItemIdParam: '00',
@@ -91,6 +91,12 @@ const teaItemErrCode = { // 教师项目相关错误码
     code: '04',
     scoreParamError: '01',
     scoreRangeError: '02',
+  },
+  validate: {
+    code: '04',
+    noValidateStudent: '01',
+    noValidateTeacher: '02',
+    paramsValidateError: '03',
   },
 };
 
