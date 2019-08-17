@@ -1,13 +1,12 @@
 'use strict';
 
 module.exports = app => {
-  const { STRING, ENUM, BOOLEAN } = app.Sequelize;
+  const { STRING, INTEGER, DATE, ENUM, BOOLEAN } = app.Sequelize;
   const User = app.model.define('User', {
     account: {
       type: STRING(32),
       primaryKey: true,
       allowNull: false,
-      unique: true,
     },
     password: {
       type: STRING(256),
@@ -21,21 +20,40 @@ module.exports = app => {
       type: STRING(256),
       allowNull: true,
     },
+    name: {
+      type: STRING(32),
+      allowNull: true,
+    },
     sex: {
       type: ENUM('MALE', 'FEMALE', 'SECRET'),
+      defaultValue: 'SECRET',
     },
-    grade: {
-      type: STRING(12),
+    per_signature: {
+      type: STRING(256),
+      allowNull: true,
     },
-    intro: {
-      type: STRING(1000),
-    },
-    isTeacher: {
+    is_teacher: {
       type: BOOLEAN,
+      defaultValue: false,
     },
-    isStudent: {
+    is_student: {
       type: BOOLEAN,
+      defaultValue: false,
     },
+    tutor_num: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    student_num: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    average_score: {
+      type: INTEGER,
+      defaultValue: 0,
+    },
+    created_at: DATE,
+    updated_at: DATE,
   },
   {
     tableName: 'user',

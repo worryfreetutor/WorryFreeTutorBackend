@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+  // 在执行数据库升级时调用的函数，创建 users 表
   up: async (queryInterface, Sequelize) => {
     const { STRING, INTEGER, ENUM, BOOLEAN, DATE } = Sequelize;
     // 用户信息表
@@ -148,9 +149,13 @@ module.exports = {
         defaultValue: 'ONGOING',
         allowNull: false,
       },
-      expire_date: DATE,
+      expire_date: {
+        type: DATE,
+        allowNull: true,
+      },
       updated_at: DATE,
       created_at: DATE,
+      deleted_at: DATE,
     });
     // 老师找学生项目表
     await queryInterface.createTable('teacher_items', {
@@ -213,9 +218,13 @@ module.exports = {
         defaultValue: 'ONGOING',
         allowNull: false,
       },
-      expire_date: DATE,
+      expire_date: {
+        type: DATE,
+        allowNull: true,
+      },
       created_at: DATE,
       updated_at: DATE,
+      deleted_at: DATE,
     });
     // 学生找老师项目交易记录表
     await queryInterface.createTable('student_transaction', {
@@ -246,11 +255,6 @@ module.exports = {
           key: 'account',
         },
       },
-      status: {
-        type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
-        defaultValue: 'ONGOING',
-        allowNull: false,
-      },
       is_finished: {
         type: BOOLEAN,
         allowNull: false,
@@ -271,7 +275,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         references: {
-          model: 'teacher_items',
+          model: 'student_items',
           key: 'item_id',
         },
       },
@@ -293,11 +297,6 @@ module.exports = {
           key: 'account',
         },
       },
-      status: {
-        type: ENUM('SUCCESS', 'FAIL', 'ONGOING'),
-        defaultValue: 'ONGOING',
-        allowNull: false,
-      },
       is_finished: {
         type: BOOLEAN,
         allowNull: false,
@@ -311,7 +310,7 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
-    // 学生申请表
+    // 学生报名教师项目表
     await queryInterface.createTable('student_registration_form', {
       item_id: {
         type: INTEGER,
@@ -355,8 +354,13 @@ module.exports = {
         type: STRING(512),
         allowNull: true,
       },
+      is_choosed: {
+        type: BOOLEAN,
+        defaultValue: false,
+      },
       created_at: DATE,
       updated_at: DATE,
+      deleted_at: DATE,
     });
     // 老师申请表
     await queryInterface.createTable('teacher_registration_form', {
@@ -418,14 +422,19 @@ module.exports = {
         type: STRING(512),
         allowNull: true,
       },
+      is_choosed: {
+        type: BOOLEAN,
+        defaultValue: false,
+      },
       created_at: DATE,
       updated_at: DATE,
     });
-    // 学生项目评价表
+    // 学生项目评价表(学生项目中，学生对老师的评价）
     await queryInterface.createTable('student_evaluation_form', {
       item_id: {
         type: INTEGER,
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'student_items',
           key: 'item_id',
@@ -434,6 +443,7 @@ module.exports = {
       student_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -442,6 +452,7 @@ module.exports = {
       teacher_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -463,11 +474,12 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
-    // 老师项目评价表
+    // 老师项目评价表（老师项目中，学生对老师的评价）
     await queryInterface.createTable('teacher_evaluation_form', {
       item_id: {
         type: INTEGER,
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'teacher_items',
           key: 'item_id',
@@ -476,6 +488,7 @@ module.exports = {
       student_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -484,6 +497,7 @@ module.exports = {
       teacher_id: {
         type: STRING(16),
         allowNull: false,
+        primaryKey: true,
         references: {
           model: 'user',
           key: 'account',
@@ -505,18 +519,74 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
+    // 学生项目收藏表
+    await queryInterface.createTable('student_items_collection', {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      account: {
+        type: STRING,
+        allowNull: false,
+        references: {
+          model: 'user',
+          key: 'account',
+        },
+      },
+      item_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'student_items',
+          key: 'item_id',
+        },
+      },
+      created_at: DATE,
+      updated_at: DATE,
+    });
+    // 教师项目收藏表
+    await queryInterface.createTable('teacher_items_collection', {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      account: {
+        type: STRING,
+        allowNull: false,
+        references: {
+          model: 'user',
+          key: 'account',
+        },
+      },
+      item_id: {
+        type: INTEGER,
+        allowNull: false,
+        references: {
+          model: 'teacher_items',
+          key: 'item_id',
+        },
+      },
+      created_at: DATE,
+      updated_at: DATE,
+    });
   },
 
+  // 在执行数据库降级时调用的函数，删除 users 表
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('validation');
-    await queryInterface.dropTable('user');
-    await queryInterface.dropTable('student_items');
-    await queryInterface.dropTable('teacher_items');
-    await queryInterface.dropTable('student_transaction');
-    await queryInterface.dropTable('teacher_transaction');
-    await queryInterface.dropTable('student_registration_form');
-    await queryInterface.dropTable('teacher_registration_form');
     await queryInterface.dropTable('student_evaluation_form');
     await queryInterface.dropTable('teacher_evaluation_form');
+    await queryInterface.dropTable('student_registration_form');
+    await queryInterface.dropTable('teacher_registration_form');
+    await queryInterface.dropTable('student_transaction');
+    await queryInterface.dropTable('teacher_transaction');
+    await queryInterface.dropTable('student_items');
+    await queryInterface.dropTable('teacher_items');
+    await queryInterface.dropTable('validation');
+    await queryInterface.dropTable('user');
   },
 };
+
+// item_id student_id teacher_id 评分 评价
+
