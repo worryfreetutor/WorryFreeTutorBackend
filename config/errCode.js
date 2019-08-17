@@ -36,6 +36,12 @@ const userErrCode = {
     paramsError: '01',
     noUpdateItem: '02',
   },
+  validate: {
+    code: '04',
+    noValidateStudent: '01',
+    noValidateTeacher: '02',
+    paramsValidateError: '03',
+  },
 };
 
 // **注意**
