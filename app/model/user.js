@@ -16,12 +16,12 @@ module.exports = app => {
       type: STRING(32),
       allowNull: true,
     },
-    avatar: {
-      type: STRING(256),
+    name: {
+      type: STRING(16),
       allowNull: true,
     },
-    name: {
-      type: STRING(32),
+    avatar: {
+      type: STRING(256),
       allowNull: true,
     },
     sex: {
@@ -58,6 +58,23 @@ module.exports = app => {
   {
     tableName: 'user',
     timestamps: true,
+    scopes: {
+      // 不需要token认证可以获取的信息
+      getInfo: {
+        attributes: [ 'account', 'nickname', 'avatar', 'sex', 'per_signature', 'tutor_num', 'average_score' ],
+      },
+      // 需要token认证获取的信息
+      getOwnInfo: {
+        attributes: [ 'account', 'nickname', 'name', 'avatar', 'sex', 'per_signature', 'is_teacher', 'is_student', 'tutor_num', 'student_num', 'average_score' ],
+      },
+    },
+    // TODO
+    // // 综合评分 用于排序
+    // getterMethods: {
+    //   rankScore() {
+    //     // return ... ;
+    //   },
+    // },
   });
   return User;
 };

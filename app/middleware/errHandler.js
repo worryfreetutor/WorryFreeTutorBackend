@@ -1,5 +1,6 @@
 'use strict';
 const userErrCode = require('../../config/errCode').userErrCode;
+
 module.exports = () => {
   return async function errorHandler(ctx, next) {
     ctx.set('Content-Type', 'application/json');

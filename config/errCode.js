@@ -34,7 +34,63 @@ const userErrCode = {
   updateInfo: {
     code: '03',
     paramsError: '01',
-    noUpdateItem: '02',
+    // noUpdateItem: '02',
+  },
+  isValidate: {
+    code: '04',
+    stuAccountExist: '01',
+    stuValidateFail: '02',
+    idNumberExist: '03',
+    idNumValidateFail: '04',
+  },
+  uploadAvatar: {
+    code: '05',
+    uploadFail: '01',
+  },
+};
+
+const validateErrCode = {
+  code: '02',
+  is_teacher: {
+    code: '01',
+    no: '01',
+  },
+  is_student: {
+    code: '02',
+    no: '01',
+  },
+};
+
+const teaItemErrCode = { // 教师项目相关错误码
+  code: '03',
+  teacherItem: {
+    code: '01',
+    // noItemIdParam: '00',
+    itemIdNotFound: '01',
+    notItemAuthor: '02',
+    onSuccessStatus: '03',
+    onExpiredStatus: '04',
+    onOngoingStatus: '05',
+    paramError: '06',
+    haveJoinerNotCancel: '07',
+  },
+  stuJoinItem: {
+    code: '02',
+    notAllowed: '01',
+    hasJoined: '02',
+    notJoined: '03',
+    notJoinersNotSuccess: '04',
+  },
+  transaction: {
+    code: '03',
+    notSuccess: '01',
+    hadEvaluated: '02',
+    notEvaluated: '03',
+  },
+  teaEvaForm: {
+    code: '04',
+    scoreParamError: '01',
+    scoreRangeError: '02',
   },
   validate: {
     code: '04',
@@ -46,6 +102,10 @@ const userErrCode = {
 
 // **注意**
 errCodeJoin(userErrCode);
+errCodeJoin(validateErrCode);
+errCodeJoin(teaItemErrCode);
 module.exports = {
   userErrCode,
+  teaItemErrCode,
+  validateErrCode,
 };

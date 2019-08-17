@@ -64,24 +64,49 @@ class UserController extends Controller {
     ctx.validate({
       nickname: 'string?',
       sex: 'string?',
-      grade: 'string?',
-      intro: 'string?',
+      per_signature: 'string?',
     }, ctx.body);
-    const { nickname, sex, grade, intro } = ctx.request.body;
+    const sex = ctx.request.body.sex;
     if (sex && sex !== 'male' && sex !== 'female' && sex !== 'secret') {
       throw ctx.helper.createError('sex必须为male、female、secret之间的某一项', userErrCode.updateInfo.paramsError);
     }
     const account = ctx.session.account;
-    ctx.body = await ctx.service.user.updateUserInfo(account, nickname, sex, grade, intro);
+    ctx.body = await ctx.service.user.updateUserInfo(account, ctx.request.body);
   }
 
   /**
-   * 获取用户信息
+   * 获取用户自己个人信息
    */
-  async getInfo() {
+  async getOwnInfo() {
     const { ctx } = this;
     const account = ctx.session.account;
-    ctx.body = await ctx.service.user.getUserInfo(account);
+    ctx.body = {
+      data: await ctx.service.user.getUserInfo(account, 'getOwnInfo'),
+    };
+  }
+
+  /**
+   * 获取其他人个人信息
+   */
+  async getOthersInfo() {
+    const { ctx } = this;
+    ctx.validate({
+      account: 'string',
+    }, ctx.request.query);
+    ctx.body = {
+      data: await ctx.service.user.getUserInfo(ctx.request.query.account),
+    };
+  }
+
+  /**
+   * 更新用户头像
+   */
+  async updateUserAvatar() {
+    const { ctx } = this;
+    const account = ctx.session.account;
+    // const account = '12345678';
+    await ctx.service.uploadImg.updateUserAvatar(account);
+    ctx.body = '更新成功';
   }
 }
 

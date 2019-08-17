@@ -73,6 +73,7 @@ module.exports = {
       },
       authentication: {
         type: ENUM('STU', 'TEA'),
+        primaryKey: true,
         allowNull: false,
       },
       stu_account: {
@@ -275,7 +276,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         references: {
-          model: 'student_items',
+          model: 'teacher_items',
           key: 'item_id',
         },
       },
@@ -360,7 +361,6 @@ module.exports = {
       },
       created_at: DATE,
       updated_at: DATE,
-      deleted_at: DATE,
     });
     // 老师申请表
     await queryInterface.createTable('teacher_registration_form', {
@@ -474,7 +474,7 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     });
-    // 老师项目评价表（老师项目中，学生对老师的评价）
+    // 老师项目评价表(老师项目中，学生对老师的评价）
     await queryInterface.createTable('teacher_evaluation_form', {
       item_id: {
         type: INTEGER,
@@ -575,6 +575,8 @@ module.exports = {
 
   // 在执行数据库降级时调用的函数，删除 users 表
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('student_items_collection');
+    await queryInterface.dropTable('teacher_items_collection');
     await queryInterface.dropTable('student_evaluation_form');
     await queryInterface.dropTable('teacher_evaluation_form');
     await queryInterface.dropTable('student_registration_form');
