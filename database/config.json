@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "root",
-    "password": "gongyongMIMA666!",
+    "password": "xiaocy",
     "database": "wft_dev",
-    "host": "49.234.6.109",
+    "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {

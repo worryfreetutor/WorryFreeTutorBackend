@@ -22,11 +22,14 @@ module.exports = appInfo => {
     // mysql配置
     sequelize: {
       dialect: 'mysql',
-      host: '49.234.6.109',
+      // host: '49.234.6.109',
+      host: '127.0.0.1',
       port: 3306,
       username: 'root',
-      password: 'gongyongMIMA666!',
+      // password: 'gongyongMIMA666!',
+      password: 'xiaocy',
       database: 'wft_dev',
+      timezone: '+08:00',
     },
     view: {
       defaultViewEngine: 'nunjucks',
@@ -36,7 +39,7 @@ module.exports = appInfo => {
     },
     cos: {
       SecretId: 'AKID70d08bVqeDXbQUJ7YnqjNl1751lHxXHl',
-      SecretKey: '',
+      SecretKey: 'OWO1OVLwIOJ2VifN2SggQxEI7h160oQo',
       Bucket: 'feapp-test-1256757654', // 存储桶名称
       Region: 'ap-guangzhou', // Bucket 所在地域
       UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹
