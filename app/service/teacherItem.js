@@ -93,7 +93,7 @@ class TeacherItemService extends Service {
     if (res.account !== account) throw ctx.helper.createError('非本项目发起者，无法操作', teaItemErrCode.teacherItem.notItemAuthor);
     return res;
   }
-  // TODO ...
+
 }
 
 module.exports = TeacherItemService;

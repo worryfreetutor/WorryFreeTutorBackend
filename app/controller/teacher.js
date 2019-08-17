@@ -2,6 +2,7 @@
 
 const Controller = require('egg').Controller;
 const { teaItemErrCode } = require('../../config/errCode');
+const { clone } = require('lodash');
 
 class TeacherController extends Controller {
 
@@ -99,9 +100,12 @@ class TeacherController extends Controller {
       expect_compensation: { type: 'string' }, // 期望的薪资
       expire_date: { type: 'date?' }, // 过期日期
     }, ctx.body);
-    // 发布项目
+    const data = (await ctx.service.teacherItem.create(account, name, ctx.request.body)).dataValues;
+    // 同步数据到elasticsearch
+    const options = clone(data);
+    ctx.service.search.create(options.item_id, options);
     ctx.body = {
-      data: await ctx.service.teacherItem.create(account, name, ctx.request.body),
+      data,
     };
   }
 
@@ -123,8 +127,10 @@ class TeacherController extends Controller {
     const { ctx } = this;
     const res = await this._getItemById(ctx, true, ctx.session.account, true, true);
     const item_id = res.item_id;
+    const options = clone(ctx.request.body);
     await this._validateSexParam(ctx);
     await ctx.service.teacherItem.update(item_id, ctx.request.body);
+    ctx.service.search.update(item_id, options);
     ctx.body = '修改成功';
   }
 
@@ -134,18 +140,20 @@ class TeacherController extends Controller {
   async deleteItem() {
     const { ctx } = this;
     const res = await this._getItemById(ctx, true, ctx.session.account, true);
+    const item_id = res.item_id;
     // 验证是否有人报名参加
     let joiner;
     try {
       joiner = await ctx.model.StuRegForm.findOne({
-        where: { item_id: res.item_id },
+        where: { item_id },
       });
     } catch (e) {
       ctx.logger.warn(e);
       throw ctx.helper.createError(`[未知错误 controller/teacher.js deleteItem] ${e.toString()}`);
     }
     if (joiner) throw ctx.helper.createError('此项目已有报名参与者，无法取消', teaItemErrCode.teacherItem.haveJoinerNotCancel);
-    await ctx.service.teacherItem.delete(res.item_id);
+    await ctx.service.teacherItem.delete(item_id);
+    ctx.service.search.delete(item_id);
     ctx.body = '项目取消成功';
   }
 
