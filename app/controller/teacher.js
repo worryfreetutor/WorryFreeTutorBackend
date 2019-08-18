@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
-const { teaItemErrCode } = require('../../config/errCode');
+const { teaItemErrCode, validateErrCode, stuItemErrCode } = require('../../config/errCode');
 const { clone } = require('lodash');
 
 class TeacherController extends Controller {
@@ -11,10 +11,10 @@ class TeacherController extends Controller {
     const { ctx } = this;
     const account = ctx.session.account;
     // 检查老师是否经过身份验证
-    // const result = await ctx.service.stuValidate.isTeacher(account);
-    // if (result.is_teacher) {
-    //   throw ctx.helper.createError('请先进行老师身份验证', userErrCode.validate.noValidateTeacher);
-    // }
+    const result = await ctx.service.stuValidate.isTeacher(account);
+    if (!result.is_teacher) {
+      throw ctx.helper.createError('请先进行老师身份验证', validateErrCode.is_teacher.no);
+    }
     // 转化一下item_id值类型为int
     if (typeof (ctx.request.body.item_id) === 'string') {
       ctx.request.body.item_id = Number(ctx.request.body.item_id);
@@ -77,9 +77,7 @@ class TeacherController extends Controller {
     const account = ctx.session.account;
     const { item_id, teacher_id, birthplace, sex, school, grade, major, experience, subject, free_time, phone, other } = ctx.request.body;
     if (account !== teacher_id) {
-      ctx.body = {
-        message: '你不是项目发起人，不能修改项目',
-      };
+      throw ctx.helper.createError('不是申请表发起人', stuItemErrCode.teaJoinItem.notFormAuthor);
     }
     const Info = {
       item_id,
@@ -139,17 +137,15 @@ class TeacherController extends Controller {
     };
     ctx.validate(options, ctx.query);
     const { item_id, teacher_id } = ctx.query;
-    const { account } = ctx.session.account;
+    const account = ctx.session.account;
     // 检测用户是否是申请表的发起人
     if (teacher_id !== account) {
-      // TODO: 错误码你不是申请表发起人，不能删除申请表
-      console.log('你不是申请表发起人，不能删除申请表');
+      throw ctx.helper.createError('你不是申请表发起人，无法进行删除', stuItemErrCode.teaJoinItem.notFormAuthor);
     }
     // 检查项目是否完成，项目完成，申请表不能删除
     const result = await ctx.service.student.getItemsInfoFromDb(item_id);
     if (result.status === 'SUCCESS') {
-      // TODO: 抛错
-      console.log('项目已经完成，不能删除申请表');
+      throw ctx.helper.createError('项目已经完成，申请表无法删除', stuItemErrCode.teaJoinItem.notFormAuthor);
     }
     ctx.body = await ctx.service.teacher.deleteApplicationForm(item_id, teacher_id);
   }

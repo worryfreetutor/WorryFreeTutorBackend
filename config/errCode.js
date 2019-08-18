@@ -93,10 +93,26 @@ const teaItemErrCode = { // 教师项目相关错误码
     scoreRangeError: '02',
   },
   validate: {
-    code: '04',
+    code: '05',
     noValidateStudent: '01',
     noValidateTeacher: '02',
     paramsValidateError: '03',
+  },
+};
+const stuItemErrCode = { // 学生项目相关错误码
+  code: '04',
+  studentItem: {
+    code: '01',
+    notItemAuthor: '01', // 没有项目权限，用于防止恶意修改他人项目内
+    unableDeleteItem: '02', // 不能删除项目，因为有申请者。
+    scoreRangeError: '03', // 评分超出范围
+    unableEvaluateItem: '04', // 不是项目参与者|交易不存在。
+    hadEvaluatedItem: '05', // 你已经评价过该项目
+  },
+  teaJoinItem: {
+    code: '02',
+    notFormAuthor: '01', // 不是申请表发起人
+    deleteSuccessItem: '02', // 项目已经完成，不能删除申请表
   },
 };
 
@@ -104,8 +120,10 @@ const teaItemErrCode = { // 教师项目相关错误码
 errCodeJoin(userErrCode);
 errCodeJoin(validateErrCode);
 errCodeJoin(teaItemErrCode);
+errCodeJoin(stuItemErrCode);
 module.exports = {
   userErrCode,
   teaItemErrCode,
   validateErrCode,
+  stuItemErrCode,
 };

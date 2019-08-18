@@ -1,5 +1,5 @@
 'use strict';
-const userErrCode = require('../../config/errCode').userErrCode;
+const teaItemErrCode = require('../../config/errCode').userErrCode;
 
 module.exports = () => {
   return async function errorHandler(ctx, next) {
@@ -15,7 +15,7 @@ module.exports = () => {
     } catch (err) {
       ctx.status = 200;
       ctx.body = {
-        code: err.code !== 'invalid_param' ? err.code : userErrCode.validate.paramsValidateError,
+        code: err.code !== 'invalid_param' ? err.code : teaItemErrCode.validate.paramsValidateError,
         message: err.message ? err.message : err.toString(),
       };
       // 所有的异常都在 app 上触发一个 error 事件

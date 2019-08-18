@@ -53,7 +53,7 @@ class TeacherService extends Service {
       // });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/teacher/申请学生项目 未知错误');
+      throw ctx.helper.createError(`service/teacher/申请学生项目 未知错误 ${err.toString()}`);
     }
     return {
       message: '申请成功',
@@ -78,7 +78,7 @@ class TeacherService extends Service {
       }, { where: { item_id, teacher_id } });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/teacher/modifyApplicationForm, 未知错误');
+      throw ctx.helper.createError(`service/teacher/modifyApplicationForm, 未知错误${err.toString()}`);
     }
     return {
       message: '修改成功',
@@ -97,7 +97,7 @@ class TeacherService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/teacher/获取申请学生项目申请表列表未知错误');
+      throw ctx.helper.createError(`service/teacher/获取申请学生项目申请表列表未知错误${err.toString()}`);
     }
     return result;
   }
@@ -114,7 +114,7 @@ class TeacherService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/teacher/getApplicationFormDetail,获取申请表详情未知错误');
+      throw ctx.helper.createError(`service/teacher/getApplicationFormDetail,获取申请表详情未知错误 ${err.toString()}`);
     }
     return result.dataValues;
   }
@@ -136,7 +136,7 @@ class TeacherService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/teacher/deleteApplicationForm,删除申请表未知错误');
+      throw ctx.helper.createError(`service/teacher/deleteApplicationForm,删除申请表未知错误${err.toString()}`);
     }
     return {
       message: '删除成功',
