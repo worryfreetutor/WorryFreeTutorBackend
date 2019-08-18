@@ -1,6 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service;
+const stuItemErrCode = require('../../config/errCode').stuItemErrCode;
 class StudentService extends Service {
   // 学生发布项目找老师
   async publish(itemInfo) {
@@ -25,7 +26,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/插入项目 未知错误');
+      throw ctx.helper.createError(`service/student/插入项目 未知错误 ${err.toString()}`);
     }
     return {
       message: '发布成功',
@@ -43,10 +44,7 @@ class StudentService extends Service {
       },
     });
     if (publisher.dataValues.account !== account) {
-      return {
-        // TODO:错误码
-        message: '您不是该项目的发布者',
-      };
+      throw ctx.helper.createError('您不是该项目的发布者', stuItemErrCode.studentItem.notItemAuthor);
     }
     // 更新项目信息
     try {
@@ -64,7 +62,7 @@ class StudentService extends Service {
       }, { where: { item_id } });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/modifyItems 修改项目信息未知错误');
+      throw ctx.helper.createError(`service/student/modifyItems 修改项目信息未知错误 ${err.toString()}`);
     }
     return {
       message: '修改成功',
@@ -81,7 +79,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/deleteItems 删除项目未知错误');
+      throw ctx.helper.createError(`service/student/deleteItems 删除项目未知错误 ${err.toString()}`);
     }
     return {
       message: '删除成功',
@@ -101,7 +99,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getItemList 获取学生列表未知错误');
+      throw ctx.helper.createError(`service/student/getItemList 获取学生列表未知错误 ${err.toString()}`);
     }
     return result;
   }
@@ -118,7 +116,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getHistroyItemList 获取学生列表未知错误');
+      throw ctx.helper.createError(`service/student/getHistroyItemList 获取学生列表未知错误 ${err.toString()}`);
     }
     return result;
   }
@@ -132,7 +130,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getItemDetail 获取学生项目详情未知错误');
+      throw ctx.helper.createError(`service/student/getItemDetail 获取学生项目详情未知错误${err.toString()}`);
     }
     return result;
   }
@@ -149,7 +147,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getTeacherFormList 获取项目教师申请表列表未知错误');
+      throw ctx.helper.createError(`service/student/getTeacherFormList 获取项目教师申请表列表未知错误${err.toString()}`);
     }
     return result;
   }
@@ -166,7 +164,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getTeacherFormDetail 获取老师申请表详情未知错误');
+      throw ctx.helper.createError(`service/student/getTeacherFormDetail 获取老师申请表详情未知错误${err.toString()}`);
     }
     return result.dataValues;
   }
@@ -174,7 +172,7 @@ class StudentService extends Service {
   async selectTeachers(info) {
     const { ctx, app } = this;
     const Op = app.Sequelize.Op;
-    const { item_id, teacher_id_array, student_id } = info;
+    const { item_id, teacher_id_array} = info;
     try {
       await ctx.model.TeacherRegistrationForm.update({ is_choosed: true }, {
         where: {
@@ -186,7 +184,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/selectTeachers 更新教师申请表未知错误');
+      throw ctx.helper.createError(`service/student/selectTeachers 更新教师申请表未知错误 ${err.toString()}`);
     }
     // 构建批量插入的record
     // const record = [];
@@ -218,7 +216,7 @@ class StudentService extends Service {
       }, { where: { item_id, teacher_id } });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/unselectTeacher 取消已选择老师未知错误');
+      throw ctx.helper.createError(`service/student/unselectTeacher 取消已选择老师未知错误${err.toString()}`);
     }
     return {
       message: '修改成功',
@@ -233,7 +231,7 @@ class StudentService extends Service {
       }, { where: { item_id } });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/finish 设置项目为完成状态未知错误');
+      throw ctx.helper.createError(`service/student/finish 设置项目为完成状态未知错误${err.toString()}`);
     }
     // 将选中的老师记录插入交易表
     await this.insertTransactionTable(item_id, student_id);
@@ -259,7 +257,7 @@ class StudentService extends Service {
       }, { where: { item_id, teacher_id, student_id } });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/evaluate 评价项目未知错误');
+      throw ctx.helper.createError(`service/student/evaluate 评价项目未知错误 ${err.toString()}`);
     }
     // 修改老师评分和评价
     await this.calAveScore(teacher_id, score);
@@ -292,7 +290,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/evaluate 评价项目未知错误');
+      throw ctx.helper.createError(`service/student/evaluate 评价项目未知错误${err.toString()}`);
     }
     await this.reCalAveScore(teacher_id, oldScore, newScore);
     return {
@@ -311,7 +309,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getItemEvaluate 获取项目评价信息未知错误');
+      throw ctx.helper.createError(`service/student/getItemEvaluate 获取项目评价信息未知错误 ${err.toString()}`);
     }
     return result;
   }
@@ -325,7 +323,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/collect 收藏学生项目未知错误');
+      throw ctx.helper.createError(`service/student/collect 收藏学生项目未知错误 ${err.toString()}`);
     }
     return {
       message: '收藏成功',
@@ -343,7 +341,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/cancelCollect 取消收藏学生项目未知错误');
+      throw ctx.helper.createError(`service/student/cancelCollect 取消收藏学生项目未知错误 ${err.toString()}`);
     }
     return {
       message: '取消收藏成功',
@@ -361,7 +359,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getCollectionList 获取收藏学生项目列表未知错误');
+      throw ctx.helper.createError(`service/student/getCollectionList 获取收藏学生项目列表未知错误${err.toString()}`);
     }
     return result;
   }
@@ -379,7 +377,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getItemsInfoFromDb 根据项目id获取项目信息未知错误');
+      throw ctx.helper.createError(`service/student/getItemsInfoFromDb 根据项目id获取项目信息未知错误${err.toString()}`);
     }
     return result.dataValues;
   }
@@ -398,7 +396,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/reCalAveScore 重新修改老师评分和学生人数未知错误');
+      throw ctx.helper.createError(`service/student/reCalAveScore 重新修改老师评分和学生人数未知错误 ${err.toString()}`);
     }
   }
   // 根据评分计算老师平均评分
@@ -417,7 +415,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/calAveScore 修改老师评分和学生人数未知错误');
+      throw ctx.helper.createError(`service/student/calAveScore 修改老师评分和学生人数未知错误 ${err.toString()}`);
     }
   }
   // 将选中的老师记录插入交易表
@@ -444,7 +442,7 @@ class StudentService extends Service {
       await ctx.model.StudentTransaction.bulkCreate(record);
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/insertTransactionTable 将选中的老师记录插入交易表未知错误');
+      throw ctx.helper.createError(`service/student/insertTransactionTable 将选中的老师记录插入交易表未知错误${err.toString()}`);
     }
   }
   // 获取交易表特定信息
@@ -461,7 +459,7 @@ class StudentService extends Service {
       });
     } catch (err) {
       ctx.logger.warn(err);
-      throw ctx.helper.createError('service/student/getTransactionInfoFromDb 获取交易表特定信息未知错误');
+      throw ctx.helper.createError(`service/student/getTransactionInfoFromDb 获取交易表特定信息未知错误${err.toString()}`);
     }
     return result;
   }

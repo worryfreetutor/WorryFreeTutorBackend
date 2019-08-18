@@ -87,7 +87,7 @@ module.exports = app => {
   router.post('/student/publish', middleware.getAccount(), controller.student.publishItems);
   // 学生修改项目
   router.post('/student/modify', middleware.getAccount(), controller.student.modifyItems);
-  // TODO: 学生删除项目(软删除，其他地方需要改，没有申请人的时候才能删除，有申请人的时候只能将项目直接设置为完成状态)
+  // 学生删除项目
   router.get('/student/delete', middleware.getAccount(), controller.student.deleteItems);
   // 获取学生项目列表
   router.get('/student/getItemList', controller.student.getItemList);
@@ -117,8 +117,6 @@ module.exports = app => {
   router.get('/student/cancelCollect', middleware.getAccount(), controller.student.cancelCollect);
   // 获取某人学生项目收藏列表
   router.get('/student/getCollectionList', middleware.getAccount(), controller.student.getCollectionList);
-
-  // TODO: 是否缺了获取历史订单（涉及交易表和项目表）
 
   // 老师接口部分
 

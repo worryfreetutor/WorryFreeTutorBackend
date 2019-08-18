@@ -1,17 +1,17 @@
 'use strict';
-const userErrCode = require('../../config/errCode').userErrCode;
+const validateErrCode = require('../../config/errCode').validateErrCode;
 const Controller = require('egg').Controller;
-
+const stuItemErrCode = require('../../config/errCode').stuItemErrCode;
 class StudentController extends Controller {
   // 学生发布项目找老师
   async publishItems() {
     const { ctx } = this;
     // 判断是否经过学生身份验证
     const account = ctx.session.account;
-    // const result = await ctx.service.stuValidate.isStudent(account);
-    // if (!result.is_student) {
-    //   throw ctx.helper.createError('请先进行学生身份验证', userErrCode.validate.noValidateStudent);
-    // }
+    const result = await ctx.service.stuValidate.isStudent(account);
+    if (!result.is_student) {
+      throw ctx.helper.createError('请先进行学生身份验证', validateErrCode.is_student.no);
+    }
     // 参数验证
     const options = {
       sex: [ 'male', 'female' ],
@@ -96,12 +96,10 @@ class StudentController extends Controller {
     const reqAccount = ctx.session.account;
     const { account, applicants_num } = await ctx.service.student.getItemsInfoFromDb(item_id);
     if (reqAccount !== account) {
-      // TODO:你不是项目发起人，无法修改项目throw ERR
-      console.log('你不是项目发起人，无法修改项目');
+      throw ctx.helper.createError('您不是项目发布者,无法删除项目', stuItemErrCode.studentItem.notItemAuthor);
     }
     if (applicants_num !== 0) {
-      // TODO:申请人不为0，你不能删除项目，只能将项目设置为完成。
-      console.log('申请人不为0，你不能删除项目，只能将项目设置为完成。');
+      throw ctx.helper.createError('申请人不为0，你不能删除项目，只能将项目设置为完成。', stuItemErrCode.studentItem.unableDeleteItem);
     }
     ctx.body = await ctx.service.student.deleteItems(item_id);
   }
@@ -143,7 +141,6 @@ class StudentController extends Controller {
   // 获取某个项目的所有教师申请表
   async getTeacherFormList() {
     const { ctx, app } = this;
-    // TODO:是否需要增加对是不是发布者的判断。
     // 转化一下item_id和teacher_id值类型为int
     if (typeof (ctx.request.query.item_id) === 'string') {
       ctx.request.query.item_id = Number(ctx.request.query.item_id);
@@ -224,9 +221,7 @@ class StudentController extends Controller {
     const publisher = await ctx.service.student.getItemsInfoFromDb(item_id);
     if (account !== publisher.account) {
       // TODO:增加错误码
-      ctx.body = {
-        message: '你不是该项目的发起人，不能修改项目信息',
-      };
+      throw ctx.helper.createError('您不是项目发布者，不能修改项目信息', stuItemErrCode.studentItem.notItemAuthor);
     }
     ctx.body = await ctx.service.student.unselectTeacher(item_id, teacher_id);
   }
@@ -247,9 +242,7 @@ class StudentController extends Controller {
     const publisher = await ctx.service.student.getItemsInfoFromDb(item_id);
     if (student_id !== publisher.account) {
       // TODO:增加错误码
-      ctx.body = {
-        message: '你不是项目发布者，无法修改修改项目信息',
-      };
+      throw ctx.helper.createError('你不是项目发布者，无法修改修改项目信息', stuItemErrCode.studentItem.notItemAuthor);
     }
     ctx.body = await ctx.service.student.finish(item_id, student_id);
   }
@@ -272,19 +265,19 @@ class StudentController extends Controller {
     const { item_id, teacher_id, student_id, score, comment, is_anonymous } = ctx.request.body;
     // 检查分数是否在0~100之间
     if (score <= 0 && score >= 100) {
-      // TODO: 报错
-      console.log('分数不符合规范');
+      throw ctx.helper.createError('评分超出100或低于0', stuItemErrCode.studentItem.scoreRangeError);
     }
     const account = ctx.session.account;
     // 检查评价人是否是项目的参与者
     if (account !== student_id) {
-      // TODO: 抛出错误
-      console.log('你不是项目参与者，不能评价该项目');
+      throw ctx.helper.createError('你不是项目参与者，不能评价该项目', stuItemErrCode.studentItem.unableEvaluateItem);
     }
     const result = await ctx.service.student.getTransactionInfoFromDb(item_id, student_id, teacher_id);
-    if (!result || result.dataValues.evaluated === true) {
-      // TODO: 抛出错误
-      console.log('你没有参与这个项目或你已经被评价过了。');
+    if (!result) {
+      throw ctx.helper.createError('交易不存在不需要进行评论', stuItemErrCode.studentItem.unableEvaluateItem);
+    }
+    if (result.dataValues.evaluated === true) {
+      throw ctx.helper.createError('你已经被评价过了', stuItemErrCode.studentItem.hadEvaluatedItem);
     }
     const Info = {
       item_id,
@@ -315,14 +308,12 @@ class StudentController extends Controller {
     const { item_id, teacher_id, student_id, score, comment, is_anonymous } = ctx.request.body;
     // 检查分数是否在0~100之间
     if (score <= 0 && score >= 100) {
-      // TODO: 报错
-      console.log('分数不符合规范');
+      throw ctx.helper.createError('评分超出100或低于0', stuItemErrCode.studentItem.scoreRangeError);
     }
     const account = ctx.session.account;
     // 检查评价人是否是项目的参与者
     if (account !== student_id) {
-      // TODO: 抛出错误
-      console.log('你不是项目参与者，不能评价该项目');
+      throw ctx.helper.createError('你不是项目参与者，不能评价该项目', stuItemErrCode.studentItem.unableEvaluateItem);
     }
     const Info = {
       item_id,
