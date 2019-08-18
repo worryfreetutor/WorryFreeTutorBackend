@@ -34,7 +34,7 @@ class LoginService extends Service {
     };
     payload.type = 'access_token';
     const access_token = app.jwt.sign(payload, secret, {
-      expiresIn: '1h',
+      expiresIn: '2h',
     });
     payload.type = 'refresh_token';
     const refresh_token = app.jwt.sign(payload, secret, {
@@ -61,7 +61,7 @@ class LoginService extends Service {
       type: 'access_token',
     };
     const access_token = await app.jwt.sign(payload, secret, {
-      expiresIn: '1h',
+      expiresIn: '2h',
     });
     return access_token;
   }
