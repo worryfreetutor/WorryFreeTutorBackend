@@ -140,7 +140,7 @@ class StudentService extends Service {
     let result;
     try {
       result = await ctx.model.TeacherRegistrationForm.findAll({
-        attributes: [ 'item_id', 'teacher_id' ],
+        attributes: [ 'item_id', 'teacher_id', 'is_choosed' ],
         where: {
           item_id,
         },
@@ -172,7 +172,7 @@ class StudentService extends Service {
   async selectTeachers(info) {
     const { ctx, app } = this;
     const Op = app.Sequelize.Op;
-    const { item_id, teacher_id_array} = info;
+    const { item_id, teacher_id_array } = info;
     try {
       await ctx.model.TeacherRegistrationForm.update({ is_choosed: true }, {
         where: {
@@ -408,10 +408,11 @@ class StudentService extends Service {
           account: teacher_id,
         },
       });
-      const { student_num, average_score = 0 } = User.dataValues;
+      const { student_num, average_score = 0, tutor_num } = User.dataValues;
       await User.update({
         average_score: Math.round((average_score * student_num + score) / (student_num + 1)),
         student_num: student_num + 1,
+        tutor_num: tutor_num + 1,
       });
     } catch (err) {
       ctx.logger.warn(err);
