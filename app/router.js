@@ -11,8 +11,8 @@ module.exports = app => {
   router.post('/user/register', controller.user.register);
   // 登录
   router.post('/user/login', controller.user.login);
-  // 刷新凭证
-  router.get('/user/refresh', middleware.getAccount(), controller.user.refresh);
+  // 刷新凭证(废弃）
+  // router.get('/user/refresh', middleware.getAccount(), controller.user.refresh);
   // 更新用户信息
   router.post('/user/update', middleware.getAccount(), controller.user.updateInfo);
   // 获取用户具体信息(自己的)

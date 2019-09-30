@@ -34,15 +34,15 @@ class LoginService extends Service {
     };
     payload.type = 'access_token';
     const access_token = app.jwt.sign(payload, secret, {
-      expiresIn: '2h',
-    });
-    payload.type = 'refresh_token';
-    const refresh_token = app.jwt.sign(payload, secret, {
       expiresIn: '30d',
     });
+    // payload.type = 'refresh_token';
+    // const refresh_token = app.jwt.sign(payload, secret, {
+    //   expiresIn: '30d',
+    // });
     return {
       access_token,
-      refresh_token,
+      // refresh_token,
     };
   }
   /**
