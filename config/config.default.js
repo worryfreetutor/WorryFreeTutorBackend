@@ -13,6 +13,7 @@ module.exports = appInfo => {
   const config = {
     jwt: {
       secret: '123456',
+      salt: '123456', // 密码验证时用的token加密用的盐
     },
     security: {
       csrf: {
@@ -22,12 +23,10 @@ module.exports = appInfo => {
     // mysql配置
     sequelize: {
       dialect: 'mysql',
-      // host: '49.234.6.109',
-      host: '127.0.0.1',
+      host: '49.234.6.109',
       port: 3306,
       username: 'root',
-      // password: 'gongyongMIMA666!',
-      password: 'xiaocy',
+      password: 'gongyongMIMA666!',
       database: 'wft_dev',
       timezone: '+08:00',
     },

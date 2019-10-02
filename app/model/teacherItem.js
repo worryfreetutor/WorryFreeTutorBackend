@@ -99,6 +99,9 @@ module.exports = app => {
           },
         },
       },
+      searchItemlist: {
+        attributes: [ 'item_id', 'account', 'name', 'sex', 'good_subject', 'expect_compensation' ],
+      },
     },
   });
   Model.prototype.toJSON = function() {

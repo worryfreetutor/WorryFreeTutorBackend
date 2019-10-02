@@ -34,7 +34,9 @@ const userErrCode = {
   updateInfo: {
     code: '03',
     paramsError: '01',
-    // noUpdateItem: '02',
+    noOldPassToken: '02',
+    oldPassError: '03',
+    tokenError: '04',
   },
   isValidate: {
     code: '04',

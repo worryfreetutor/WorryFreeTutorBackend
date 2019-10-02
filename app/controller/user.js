@@ -108,6 +108,55 @@ class UserController extends Controller {
     await ctx.service.uploadImg.updateUserAvatar(account);
     ctx.body = '更新成功';
   }
+
+  /**
+   * 更新用户密码
+   */
+  async updateUserPass() {
+    const { ctx, config } = this;
+    const account = ctx.session.account;
+    ctx.validate({
+      old_password: 'string?',
+      token: 'string?',
+      new_password: 'string',
+    }, ctx.body);
+    const { old_password, token, new_password } = ctx.request.body;
+    if (!old_password && !token) {
+      throw ctx.helper.createError('没有旧密码或验证凭证', userErrCode.updateInfo.noOldPassToken);
+    }
+    // old_password验证机制
+    if (old_password) {
+      let user;
+      try {
+        user = await ctx.model.User.findOne({
+          where: {
+            account,
+            password: ctx.helper.encrypt(old_password, config.userEncryptKey),
+          },
+        });
+      } catch (e) {
+        ctx.logger.warn(e);
+        throw ctx.helper.createError(`[controller/user.js 未知错误] ${e.toString()}`);
+      }
+      if (!user) {
+        throw ctx.helper.createError('旧密码错误', userErrCode.updateInfo.oldPassError);
+      }
+    }
+    // token验证
+    if (token) {
+      const crypto = require('crypto');
+      const md5 = crypto.createHash('md5');
+      // md5加盐加密
+      const result = md5.update(`${account}:${config.jwt.salt}`).digest('hex');
+      console.log(result);
+      if (token !== result) {
+        throw ctx.helper.createError('token验证失败', userErrCode.updateInfo.tokenError);
+      }
+    }
+    // 更新
+    await ctx.service.user.updateUserPass(account, new_password);
+    ctx.body = '更新成功';
+  }
 }
 
 module.exports = UserController;

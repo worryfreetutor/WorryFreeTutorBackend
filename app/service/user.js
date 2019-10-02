@@ -58,6 +58,23 @@ class UserService extends Service {
     return '更新成功';
   }
 
+  /**
+   * 更新用户密码
+   */
+  async updateUserPass(account, newPass) {
+    const { ctx, config } = this;
+    try {
+      await ctx.model.User.update({
+        password: ctx.helper.encrypt(newPass, config.userEncryptKey),
+      }, {
+        where: { account },
+      });
+    } catch (e) {
+      ctx.logger.warn(e);
+      throw ctx.helper.createError(`[service/user.js 更新用户密码] ${e.toString()}`);
+    }
+  }
+
   //
   /**
    * 获取用户信息

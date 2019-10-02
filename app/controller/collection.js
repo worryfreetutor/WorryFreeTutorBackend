@@ -25,7 +25,7 @@ class CollectionController extends Controller {
       attributes: [ 'id', 'createdAt' ],
       where: { account },
       include: [{
-        model: ctx.model.TeacherItem.scope('itemlist'),
+        model: ctx.model.TeacherItem.scope('searchItemlist'),
       }],
     });
     ctx.body = {
