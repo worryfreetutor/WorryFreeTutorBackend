@@ -6,6 +6,8 @@
 module.exports = app => {
   const { router, controller, middleware } = app;
   router.get('/', controller.home.index);
+  // 发送手机短信验证码
+  router.get('/code', controller.sms.sendSms);
   // user部分
   // 注册
   router.post('/user/register', controller.user.register);

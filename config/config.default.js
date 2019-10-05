@@ -43,6 +43,17 @@ module.exports = appInfo => {
       Region: 'ap-guangzhou', // Bucket 所在地域
       UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹
     },
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: '',
+      db: 0,
+    },
+    AliSms: {
+      accessKeyId: 'LTAIgYqTJIJhKfgt',
+      accessKeySecret: 'JYOtrceiRIQrF3dO4sAtUOBLW5Vy7g',
+      expiredTime: 120, // 验证码有效时长
+    },
   };
 
   // use for cookie sign key, should change to your own and keep security
