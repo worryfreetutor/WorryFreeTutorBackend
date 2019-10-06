@@ -45,8 +45,40 @@ class LoginService extends Service {
       // refresh_token,
     };
   }
+
+  // 验证码登陆
+  async codeLogin(phone) {
+    const { app, ctx } = this;
+    const User = ctx.model.User;
+    let user;
+    try {
+      user = await User.findOne({
+        where: {
+          account: phone,
+        },
+      });
+    } catch (err) {
+      throw ctx.helper.createError('查询用户表未知错误', userErrCode.codeLogin.findDBUnknowError);
+    }
+    // 检查该用户是否已经注册
+    if (!user) {
+      throw ctx.helper.createError('该用户没有注册', userErrCode.codeLogin.accountNoExist);
+    }
+    // 使用jwt创建用户对应token
+    const secret = app.config.jwt.secret;
+    const payload = {
+      name: phone,
+      type: 'access_token',
+    };
+    const access_token = app.jwt.sign(payload, secret, {
+      expiresIn: '30d',
+    });
+    return access_token;
+  }
+
   /**
    * 从刷新令牌中获取用户信息，并重新生成access_token返回
+   * 
    * @param refresh_token : 刷新令牌
    * @retrun access_token : 令牌
    */

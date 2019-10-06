@@ -22,4 +22,8 @@ module.exports = {
     enable: true,
     package: 'egg-view-nunjucks',
   },
+  redis: {
+    enable: true,
+    package: 'egg-redis',
+  },
 };

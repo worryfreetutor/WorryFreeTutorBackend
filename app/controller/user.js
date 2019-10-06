@@ -4,10 +4,27 @@ const Controller = require('egg').Controller;
 const userErrCode = require('../../config/errCode').userErrCode;
 
 class UserController extends Controller {
+  /**
+   * 短信验证码校验函数
+   */
+  async verificateSMS(ctx, phone, num) {
+    const redis = ctx.app.redis;
+    const code = await redis.get(phone);
+    if (!code) {
+      throw ctx.helper.createError('该手机未发送短信或手机短信验证码过期', userErrCode.auth.expiredCode);
+    }
+    if (num !== code) {
+      throw ctx.helper.createError('手机验证码不正确', userErrCode.auth.validateSmsCodeFail);
+    }
+  }
+
   // 注册
   async register() {
     const { ctx } = this;
     ctx.validate({
+      code: {
+        type: 'string', // 手机验证码
+      },
       account: {
         type: 'string',
       },
@@ -16,11 +33,13 @@ class UserController extends Controller {
         min: 6,
       },
     }, ctx.body);
-    const { account, password } = ctx.request.body;
+    const { code, account, password } = ctx.request.body
     const isPhone = str => /^\d+$/.test(str);
     if (!isPhone(account)) {
       throw ctx.helper.createError('账号必须为有效手机号', userErrCode.register.accountMustBeNumber);
     }
+    // 验证手机验证码
+    await this.verificateSMS(ctx, account, code);
     const res = await ctx.service.user.register(account, password);
     ctx.body = res;
   }
@@ -35,12 +54,30 @@ class UserController extends Controller {
     // 参数检验
     ctx.validate(option, ctx.request.body);
     const { account, password } = ctx.request.body;
-    const { access_token, refresh_token } = await ctx.service.login.login(account, password);
+    const { access_token } = await ctx.service.login.login(account, password);
     ctx.body = {
       access_token,
-      refresh_token,
     };
   }
+  // 验证码登陆
+  async codeLogin() {
+    const { ctx } = this;
+    // 校验规则
+    const options = {
+      phone: 'string',
+      code: 'string',
+    };
+    // 参数检验
+    ctx.validate(options, ctx.request.body);
+    const { phone, code } = ctx.request.body;
+    // 验证验证码
+    await this.verificateSMS(ctx, phone, code);
+    const access_token = await ctx.service.login.codeLogin(phone);
+    ctx.body = {
+      access_token,
+    };
+  }
+
   async refresh() {
     const { ctx } = this;
     const refresh_token = ctx.header.authorization;
@@ -104,7 +141,6 @@ class UserController extends Controller {
   async updateUserAvatar() {
     const { ctx } = this;
     const account = ctx.session.account;
-    // const account = '12345678';
     await ctx.service.uploadImg.updateUserAvatar(account);
     ctx.body = '更新成功';
   }
@@ -113,46 +149,17 @@ class UserController extends Controller {
    * 更新用户密码
    */
   async updateUserPass() {
-    const { ctx, config } = this;
-    const account = ctx.session.account;
+    const { ctx } = this;
     ctx.validate({
-      old_password: 'string?',
-      token: 'string?',
-      new_password: 'string',
+      account: 'string',
+      code: 'string',
+      new_password: {
+        type: 'string',
+        min: 6,
+      },
     }, ctx.body);
-    const { old_password, token, new_password } = ctx.request.body;
-    if (!old_password && !token) {
-      throw ctx.helper.createError('没有旧密码或验证凭证', userErrCode.updateInfo.noOldPassToken);
-    }
-    // old_password验证机制
-    if (old_password) {
-      let user;
-      try {
-        user = await ctx.model.User.findOne({
-          where: {
-            account,
-            password: ctx.helper.encrypt(old_password, config.userEncryptKey),
-          },
-        });
-      } catch (e) {
-        ctx.logger.warn(e);
-        throw ctx.helper.createError(`[controller/user.js 未知错误] ${e.toString()}`);
-      }
-      if (!user) {
-        throw ctx.helper.createError('旧密码错误', userErrCode.updateInfo.oldPassError);
-      }
-    }
-    // token验证
-    if (token) {
-      const crypto = require('crypto');
-      const md5 = crypto.createHash('md5');
-      // md5加盐加密
-      const result = md5.update(`${account}:${config.jwt.salt}`).digest('hex');
-      console.log(result);
-      if (token !== result) {
-        throw ctx.helper.createError('token验证失败', userErrCode.updateInfo.tokenError);
-      }
-    }
+    const { account, code, new_password } = ctx.request.body;
+    await this.verificateSMS(ctx, account, code);
     // 更新
     await ctx.service.user.updateUserPass(account, new_password);
     ctx.body = '更新成功';
