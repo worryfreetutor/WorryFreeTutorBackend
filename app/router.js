@@ -8,6 +8,8 @@ module.exports = app => {
   router.get('/', controller.home.index);
   // 发送手机短信验证码
   router.get('/code', controller.sms.sendSms);
+  // 验证码登陆
+  router.post('/user/code/login', controller.user.codeLogin);
   // user部分
   // 注册
   router.post('/user/register', controller.user.register);

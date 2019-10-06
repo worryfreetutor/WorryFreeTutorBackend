@@ -43,11 +43,19 @@ module.exports = appInfo => {
       Region: 'ap-guangzhou', // Bucket 所在地域
       UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹
     },
+    // redis: {
+    //   host: '127.0.0.1',
+    //   port: 6379,
+    //   password: '',
+    //   db: 0,
+    // },
     redis: {
-      host: '127.0.0.1',
-      port: 6379,
-      password: '',
-      db: 0,
+      client: {
+        port: 6379, // Redis port
+        host: '127.0.0.1', // Redis host
+        password: null,
+        db: 0,
+      },
     },
     AliSms: {
       accessKeyId: 'LTAIgYqTJIJhKfgt',

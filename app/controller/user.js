@@ -35,12 +35,39 @@ class UserController extends Controller {
     // 参数检验
     ctx.validate(option, ctx.request.body);
     const { account, password } = ctx.request.body;
-    const { access_token, refresh_token } = await ctx.service.login.login(account, password);
+    const { access_token } = await ctx.service.login.login(account, password);
     ctx.body = {
       access_token,
-      refresh_token,
     };
   }
+  // 验证码登陆
+  async codeLogin() {
+    const { ctx } = this;
+    // 校验规则
+    const options = {
+      phone: 'string',
+      code: 'string',
+    };
+    // 参数检验
+    ctx.validate(options, ctx.request.body);
+    const { phone, code } = ctx.request.body;
+    // 验证验证码
+    const result = await ctx.helper.verificateSMS(phone, code);
+    let access_token;
+    if (result === 0) {
+      access_token = await ctx.service.login.codeLogin(phone);
+    } else if (result === 1) {
+      // TODO: 抛出错误，验证码错误
+      console.log('抛出错误，验证码错误');
+    } else if (result === 2) {
+      // TODO：抛出错误，验证码失效
+      console.log('抛出错误，验证码失效');
+    }
+    ctx.body = {
+      access_token,
+    };
+  }
+
   async refresh() {
     const { ctx } = this;
     const refresh_token = ctx.header.authorization;

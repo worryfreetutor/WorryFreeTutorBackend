@@ -55,6 +55,22 @@ module.exports = {
     }
     return err;
   },
+  // 短信验证函数
+  // 2为验证码已经过期
+  // 1为验证码错误
+  // 0为验证成功
+  async verificateSMS(phone, num) {
+    const { app } = this;
+    const redis = app.redis;
+    const code = await redis.get(phone);
+    if (!code) {
+      return 2;
+    }
+    if (num !== code) {
+      return 1;
+    }
+    return 0;
+  },
   encrypt,
   decrypt,
   objFilter,

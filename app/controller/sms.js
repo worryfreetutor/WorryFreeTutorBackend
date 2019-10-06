@@ -6,10 +6,10 @@ const Core = require('@alicloud/pop-core');
 class SmsController extends Controller {
   /**
    * 发送短信验证码
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async sendSms() {
-    const { ctx, config } = this;
+    const { app, ctx, config } = this;
     ctx.validate({
       phone: 'string',
     }, ctx.request.query);
@@ -27,7 +27,7 @@ class SmsController extends Controller {
       PhoneNumbers: phone,
       SignName: '无忧家教',
       TemplateCode: 'SMS_166778745',
-      TemplateParam: `{\'code\':${code}`,
+      TemplateParam: `{'code':'${code}'}`,
     };
     const requestOption = {
       method: 'POST',
@@ -41,11 +41,17 @@ class SmsController extends Controller {
       // TODO 报错
       console.log(ex);
     });
+    // redis短信倒数功能。
+    const redis = app.redis;
+    await redis.pipeline()
+      .set(phone, code)
+      .expire(phone, expiredTime)
+      .exec();
   }
 
   /**
    * 生成随机四位数字字符
-   * @returns {string}
+   * @return {string}
    */
   generateCode() {
     let res = '';
