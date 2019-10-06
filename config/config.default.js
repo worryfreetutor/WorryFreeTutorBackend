@@ -13,7 +13,6 @@ module.exports = appInfo => {
   const config = {
     jwt: {
       secret: '123456',
-      salt: '123456', // 密码验证时用的token加密用的盐
     },
     security: {
       csrf: {
@@ -43,12 +42,6 @@ module.exports = appInfo => {
       Region: 'ap-guangzhou', // Bucket 所在地域
       UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹
     },
-    // redis: {
-    //   host: '127.0.0.1',
-    //   port: 6379,
-    //   password: '',
-    //   db: 0,
-    // },
     redis: {
       client: {
         port: 6379, // Redis port

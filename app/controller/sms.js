@@ -3,6 +3,8 @@
 const Controller = require('egg').Controller;
 const Core = require('@alicloud/pop-core');
 
+const { userErrCode } = require('../../config/errCode');
+
 class SmsController extends Controller {
   /**
    * 发送短信验证码
@@ -32,21 +34,21 @@ class SmsController extends Controller {
     const requestOption = {
       method: 'POST',
     };
-    client.request('SendSms', params, requestOption).then(result => {
-      result = JSON.parse(result);
-      if (result.Code !== 'OK') {
-        // TODO 报错
-      }
-    }, ex => {
-      // TODO 报错
-      console.log(ex);
+    const res = await client.request('SendSms', params, requestOption).then(result => {
+      return result;
+    }, err => {
+      throw ctx.helper.createError(`[发送手机短信验证码 未知错误] ${err.toString()}`);
     });
-    // redis短信倒数功能。
-    const redis = app.redis;
-    await redis.pipeline()
-      .set(phone, code)
-      .expire(phone, expiredTime)
-      .exec();
+    if (res.Code === 'OK') {
+      // redis短信倒数功能。
+      const redis = app.redis;
+      await redis.pipeline()
+        .set(phone, code)
+        .expire(phone, expiredTime)
+        .exec();
+    } else {
+      throw ctx.helper.createError(`[发送手机短信验证码 发送失败] ${res.toString()}`, userErrCode.auth.sendSmsFail);
+    }
   }
 
   /**

@@ -19,6 +19,9 @@ const userErrCode = {
   code: '01',
   auth: {
     code: '00',
+    sendSmsFail: '01', // 手机短信验证码发送失败
+    validateSmsCodeFail: '02', // 手机短信验证码校验失败
+    expiredCode: '03', // 手机短信验证码过期
   },
   register: {
     code: '01',
@@ -34,9 +37,6 @@ const userErrCode = {
   updateInfo: {
     code: '03',
     paramsError: '01',
-    noOldPassToken: '02',
-    oldPassError: '03',
-    tokenError: '04',
   },
   isValidate: {
     code: '04',

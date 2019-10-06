@@ -20,7 +20,7 @@ module.exports = app => {
   // 更新用户信息
   router.post('/user/update', middleware.getAccount(), controller.user.updateInfo);
   // 更新用户密码
-  router.post('/user/update/pw', middleware.getAccount(), controller.user.updateUserPass);
+  router.post('/user/update/pw', controller.user.updateUserPass);
   // 获取用户具体信息(自己的)
   router.get('/user/info', middleware.getAccount(), controller.user.getOwnInfo);
   // 获取其他用户信息
