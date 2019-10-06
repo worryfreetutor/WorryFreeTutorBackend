@@ -49,6 +49,11 @@ const userErrCode = {
     code: '05',
     uploadFail: '01',
   },
+  codeLogin: {
+    code: '06',
+    findDBUnknowError: '01',
+    accountNoExist: '02',
+  },
 };
 
 const validateErrCode = {

@@ -58,12 +58,11 @@ class LoginService extends Service {
         },
       });
     } catch (err) {
-      // TODO:错误码，未知错误
+      throw ctx.helper.createError('查询用户表未知错误', userErrCode.codeLogin.findDBUnknowError);
     }
     // 检查该用户是否已经注册
     if (!user) {
-      // TODO:错误码，用户还没有注册
-      console.log('用户还没有注册');
+      throw ctx.helper.createError('该用户没有注册', userErrCode.codeLogin.accountNoExist);
     }
     // 使用jwt创建用户对应token
     const secret = app.config.jwt.secret;
@@ -79,6 +78,7 @@ class LoginService extends Service {
 
   /**
    * 从刷新令牌中获取用户信息，并重新生成access_token返回
+   * 
    * @param refresh_token : 刷新令牌
    * @retrun access_token : 令牌
    */
