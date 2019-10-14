@@ -1,7 +1,8 @@
 'use strict';
+const { clone } = require('lodash');
 
 module.exports = app => {
-  const { STRING, INTEGER, DATE, ENUM, BOOLEAN } = app.Sequelize;
+  const { STRING, INTEGER, DATE, ENUM, BOOLEAN, Model } = app.Sequelize;
   const User = app.model.define('User', {
     account: {
       type: STRING(32),
@@ -76,5 +77,15 @@ module.exports = app => {
     //   },
     // },
   });
+  Model.prototype.toJSON = function() {
+    const data = clone(this.dataValues);
+    for (const key in data) {
+      if (data[key] === null) data[key] = '';
+    }
+    data.avatar = data.avatar === '' ?
+      'https://feapp-test-1259186164.cos.ap-guangzhou.myqcloud.com/user-avatar/default.jpg'
+      : `https://${data.avatar}`;
+    return data;
+  };
   return User;
 };

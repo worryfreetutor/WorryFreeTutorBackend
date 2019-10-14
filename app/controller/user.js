@@ -141,8 +141,12 @@ class UserController extends Controller {
   async updateUserAvatar() {
     const { ctx } = this;
     const account = ctx.session.account;
-    await ctx.service.uploadImg.updateUserAvatar(account);
-    ctx.body = '更新成功';
+    const avatar = await ctx.service.uploadImg.updateUserAvatar(account);
+    console.log(avatar);
+    ctx.body = {
+      avatar,
+      message: '更新成功',
+    };
   }
 
   /**

@@ -36,8 +36,11 @@ module.exports = appInfo => {
       mode: 'file',
     },
     cos: {
+      // SecretId: 'AKIDTlT0LRmtFahIePnb3LtNbeopa5LgrbBX' // (g)
       SecretId: 'AKID70d08bVqeDXbQUJ7YnqjNl1751lHxXHl',
+      // SecretKey: 'xiEMZFiCRb3JhSsD5WllUisqBHIKyPs7' // (g)
       SecretKey: 'OWO1OVLwIOJ2VifN2SggQxEI7h160oQo',
+      // Bucket: 'feapp-test-1259186164' // (g)
       Bucket: 'feapp-test-1256757654', // 存储桶名称
       Region: 'ap-guangzhou', // Bucket 所在地域
       UserAvatarFolder: 'user-avatar', // 存放用户头像的文件夹

@@ -31,6 +31,7 @@ class UploadImgService extends Service {
     // 获取上传图片上传到云对象存储
     const file = ctx.request.files[0];
     const filename = `${uuid.v1()}${path.extname(file.filename).toLowerCase()}`;
+    // 用户新头像地址
     await cos.putObject({
       Bucket,
       Region,
@@ -67,6 +68,7 @@ class UploadImgService extends Service {
         err ? ctx.logger.warn(err) : console.log(data);
       });
     }
+    return `https://${Bucket}.cos.${Region}.myqcloud.com/${UserAvatarFolder}/${filename}`;
   }
 }
 
